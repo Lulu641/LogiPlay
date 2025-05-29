@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Lucas's Emulator</title>
-    <link rel="icon" href="static/images/OIP.jpg" type="image/jpeg" />
+    <link rel="icon" href="static/images/OIP.jpg" type="image/jpeg">
     <style>
         body {
             margin: 0;
@@ -15,6 +15,7 @@
             color: white;
             text-align: center;
         }
+
         h1 {
             margin-top: 30px;
             font-size: 3em;
@@ -26,15 +27,18 @@
                 2px  2px 0 black;
             display: inline-block;
         }
+
         .logo {
             vertical-align: middle;
             height: 60px;
             margin-left: 5px;
         }
+
         p {
             font-size: 1.2em;
             margin: 15px 0 30px;
         }
+
         #emu-box {
             margin: 0 auto 40px;
             padding: 20px;
@@ -46,17 +50,22 @@
             position: relative;
             cursor: pointer;
         }
+
         #input {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             opacity: 0;
             cursor: pointer;
         }
+
         #emu-box:hover {
             border-color: #38f;
             background-color: #333;
         }
+
         #game {
             margin-top: 20px;
             height: 480px;
@@ -65,11 +74,11 @@
     </style>
 </head>
 <body>
-    <h1>Lucas's Emulator <img src="static/images/OIP.jpg" alt="Logo" class="logo" /></h1>
-    <p>Drop a ROM below (GBA, SNES, NDS, etc.)</p>
+    <h1>Lucas's Emulator <img src="static/images/OIP.jpg" alt="Logo" class="logo"></h1>
+    <p>Drop a ROM below (GBA, SNES, etc)</p>
 
     <div id="emu-box">
-        <input type="file" id="input" />
+        <input type="file" id="input">
         Drag ROM file or click here
     </div>
 
@@ -79,8 +88,6 @@
         const input = document.getElementById("input");
 
         input.addEventListener("change", async () => {
-            if (!input.files.length) return;
-
             const romFile = input.files[0];
             const fileName = romFile.name;
             const parts = fileName.split(".");
@@ -100,43 +107,23 @@
             console.log("Extension:", ext);
             console.log("Mapped Core:", core);
 
-            // Create a blob URL for the ROM file
             const reader = new FileReader();
 
-            reader.onload = () => {
+            reader.onload = function () {
                 const blobURL = URL.createObjectURL(new Blob([reader.result]));
 
-                // Remove any previously loaded emulator scripts to avoid conflicts
-                const oldScript = document.getElementById("emulatorjs-loader");
-                if (oldScript) oldScript.remove();
-
-                // Create new script element for EmulatorJS loader
                 const script = document.createElement("script");
-                script.id = "emulatorjs-loader";
                 script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
                 script.onerror = () => alert("EmulatorJS failed to load. Check your internet connection.");
-                
-                // After the script loads, initialize the player
-                script.onload = () => {
-                    // Generate a unique game ID to avoid localStorage collision
-                    window.EJS_gameID = "game-" + Date.now();
-
-                    // Set up emulator config globals
-                    window.EJS_player = "#game";
-                    window.EJS_gameUrl = blobURL;
-                    window.EJS_gameName = name;
-                    window.EJS_core = core;
-                    window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-                    window.EJS_startOnLoaded = true;
-                    window.EJS_threads = (core === "nds" || core === "psp");
-
-                    // Initialize the player (calls EmulatorJS.initPlayer or similar internally)
-                    if (typeof EmulatorJS !== "undefined" && EmulatorJS.initPlayer) {
-                        EmulatorJS.initPlayer();
-                    }
-                };
-
                 document.body.appendChild(script);
+
+                window.EJS_player = "#game";
+                window.EJS_gameUrl = blobURL;
+                window.EJS_gameName = name;
+                window.EJS_core = core;
+                window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+                window.EJS_startOnLoaded = true;
+                window.EJS_threads = (core === "nds" || core === "psp");
             };
 
             reader.readAsArrayBuffer(romFile);
