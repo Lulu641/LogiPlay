@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lucas's Emulator (Supports DS)</title>
+    <link rel="icon" href="static/images/OIP.jpg" type="image/jpeg">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(to bottom, #1a1a1a 0%, #121212 100%);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-size: cover;
+            color: white;
+            text-align: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        h1 {
+            margin-top: 30px;
+            font-size: 3em;
+            text-decoration: underline;
+            text-shadow: 
+                -2px -2px 0 black,
+                2px -2px 0 black,
+               -2px  2px 0 black,
+                2px  2px 0 black;
+            display: inline-block;
+        }
+
+        .logo {
+            vertical-align: middle;
+            height: 60px;
+            margin-left: 5px;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin: 15px 0 30px;
+        }
+
+        #emu-box {
+            margin: 0 auto 40px;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            border: 3px dashed #ccc;
+            border-radius: 10px;
+            background-color: #222;
+            position: relative;
+        }
+
+        #input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        #emu-box:hover {
+            border-color: #38f;
+            background-color: #333;
+        }
+
+        #game {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>  Lucas's Emulator
+        <img src="static/images/OIP.jpg" alt="Logo" class="logo">
+    </h1>
+    <p>Drop ANY rom up to DS :)</p>
+
+    <div id="emu-box">
+        <input type="file" id="input">
+        Drag ROM file or click here
+    </div>
+
+    <div id="game"></div>
+
+    <script>
+        const input = document.getElementById("input");
+
+        input.addEventListener("change", async () => {
+            const romFile = input.files[0];
+            const parts = romFile.name.split(".");
+            const ext = parts.pop().toLowerCase();
+            const name = parts.join(".");
+
+            const coreMap = {
+                gba: "gba", gb: "gb", gbc: "gb", nes: "nes",
+                smc: "snes", sfc: "snes", fig: "snes", n64: "n64", z64: "n64",
+                bin: "gen", gen: "gen", sega: "gen"
+            };
+
+            const core = coreMap[ext] || "gba";
+
+            const reader = new FileReader();
+            reader.onload = function () {
+                const blobURL = URL.createObjectURL(new Blob([reader.result]));
+
+                const script = document.createElement("script");
+                script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+                document.body.appendChild(script);
+
+                window.EJS_player = "#game";
+                window.EJS_gameUrl = blobURL;
+                window.EJS_gameName = name;
+                window.EJS_core = core;
+                window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+                window.EJS_startOnLoaded = true;
+            };
+            reader.readAsArrayBuffer(romFile);
+        });
+    </script>
+</body>
+</html>
