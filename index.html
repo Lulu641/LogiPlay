@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lucas's Emulator</title>
+    <title>LinkEMU</title>
     <link rel="icon" href="static/images/OIP.jpg" type="image/jpeg">
     <style>
         body {
@@ -71,10 +71,33 @@
             height: 480px;
             background: black;
         }
+
+        /* 🔹 Nav styling */
+        .nav {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+
+        .nav a {
+            color: #38f;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <h1>Lucas's Emulator <img src="static/images/OIP.jpg" alt="Logo" class="logo"></h1>
+    <!-- 🔹 Navigation -->
+    <div class="nav">
+        <a href="movies.html">Movies</a>
+    </div>
+
+    <h1>LinkEMU <img src="static/images/OIP.jpg" alt="Logo" class="logo"></h1>
     <p>Drop a ROM below (GBA, SNES, etc)</p>
 
     <div id="emu-box">
