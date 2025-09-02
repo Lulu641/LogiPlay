@@ -1,39 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>LinkEMU Search</title>
-    <link rel="icon" href="static/images/OIP.jpg" type="image/jpeg">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background-color: black;
-            color: white;
-        }
-        h1 {
-            margin: 20px;
-            text-align: center;
-            font-size: 2.5em;
-        }
-        .search-container {
-            max-width: 800px;
-            margin: 40px auto;
-        }
-        /* Optional: style the Google results container */
-        .gcse-searchresults-only {
-            background-color: #111;
-            color: white;
-        }
-    </style>
-    <!-- Google Custom Search Script -->
-    <script async src="https://cse.google.com/cse.js?cx=e2d0a86623409420f"></script>
+<meta charset="UTF-8">
+<title>LinkEMU Web Browser</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: black;
+    color: white;
+  }
+  #search-bar {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2em;
+    box-sizing: border-box;
+    border: none;
+  }
+  iframe {
+    width: 100%;
+    height: 90vh;
+    border: none;
+  }
+</style>
 </head>
 <body>
-    <h1>LinkEMU Search</h1>
-    <div class="search-container">
-        <!-- This renders the search box AND results inside your page -->
-        <div class="gcse-search"></div>
-    </div>
+<input id="search-bar" type="text" placeholder="Enter URL or search term..." onkeydown="if(event.key==='Enter'){loadURL();}">
+<iframe id="webframe" src="https://www.google.com"></iframe>
+
+<script>
+function loadURL() {
+    const input = document.getElementById('search-bar').value.trim();
+    const iframe = document.getElementById('webframe');
+
+    if(input.startsWith('http://') || input.startsWith('https://')) {
+        iframe.src = input; // load exact URL
+    } else {
+        // treat input as search query
+        const query = encodeURIComponent(input);
+        iframe.src = 'https://www.google.com/search?q=' + query;
+    }
+}
+</script>
 </body>
 </html>
