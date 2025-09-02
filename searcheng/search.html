@@ -1,108 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Search Engine Sandbox - LinkEMU</title>
-<link rel="icon" type="image/x-icon" href="assets/images/branding/favicon/interstellar.png" />
+    <meta charset="UTF-8">
+    <title>Search - LinkEMU</title>
+    <link rel="icon" href="assets/images/branding/favicon/interstellar.png" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Tahoma, Serif;
+            color: #fff;
+            background-color: #000;
+            overflow: hidden;
+        }
 
-<style>
-    body, html { 
-        margin: 0; 
-        height: 100%; 
-        overflow: hidden; 
-        font-family: Arial, Tahoma, Serif; 
-        background: black; 
-        color: white;
-    }
+        /* Search bar styling */
+        .search-bar {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 80%;
+            max-width: 700px;
+        }
 
-    /* Search bar */
-    .search-bar {
-        position: fixed;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 100;
-    }
+        .search-bar input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 18px;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+        }
 
-    .search-bar input {
-        width: 400px;
-        padding: 10px;
-        font-size: 16px;
-        border-radius: 8px;
-        border: none;
-    }
-
-    iframe {
-        border: none;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-
-    nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 2rem;
-        background: transparent;
-        z-index: 101;
-    }
-
-    nav h2 {
-        margin: 0;
-    }
-
-    nav a {
-        color: #38f;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 1.1em;
-    }
-
-    nav a:hover {
-        text-decoration: underline;
-    }
-</style>
+        /* Sandbox iframe styling */
+        #sandboxFrame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 1;
+        }
+    </style>
 </head>
 <body>
+    <!-- Search bar -->
+    <div class="search-bar">
+        <form id="searchForm">
+            <input type="text" id="urlInput" placeholder="Enter URL or search term" />
+        </form>
+    </div>
 
-<!-- Navigation -->
-<nav>
-    <h2>LinkEMU Search</h2>
-    <a href="movies.html">Movies</a>
-</nav>
+    <!-- Sandbox iframe -->
+    <iframe id="sandboxFrame" src="about:blank"></iframe>
 
-<!-- Search bar -->
-<div class="search-bar">
-    <input type="text" id="urlInput" placeholder="Enter URL or search term" />
-</div>
+    <script>
+        const form = document.getElementById('searchForm');
+        const input = document.getElementById('urlInput');
+        const iframe = document.getElementById('sandboxFrame');
 
-<!-- Sandbox iframe -->
-<iframe id="sandboxFrame" src="about:blank"></iframe>
-
-<script>
-    const input = document.getElementById('urlInput');
-    const iframe = document.getElementById('sandboxFrame');
-
-    input.addEventListener('keydown', function(e) {
-        if(e.key === 'Enter') {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
             let url = input.value.trim();
 
-            // If not a full URL, search with Google
-            if(!/^https?:\/\//.test(url)) {
+            // If user typed a URL
+            if (isUrl(url)) {
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'http://' + url;
+                }
+            } else {
+                // Treat it as a search term
                 url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
             }
 
-            iframe.src = url; // Load inside iframe
-        }
-    });
-</script>
+            // Load URL inside iframe
+            iframe.src = url;
+        });
 
+        function isUrl(val) {
+            return val.includes('.') && !val.includes(' ');
+        }
+    </script>
 </body>
 </html>
