@@ -2,54 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Google Search</title>
+    <title>LinkEMU Search</title>
+    <link rel="icon" href="static/images/OIP.jpg" type="image/jpeg">
     <style>
         body {
-            background-color: #202124;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background-color: black;
+            color: white;
         }
         h1 {
-            font-size: 3rem;
-            margin-bottom: 30px;
+            margin: 20px;
+            text-align: center;
+            font-size: 2.5em;
         }
-        .search-box {
-            width: 50%;
-            display: flex;
+        .search-container {
+            max-width: 800px;
+            margin: 40px auto;
         }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 24px 0 0 24px;
-            font-size: 16px;
-            outline: none;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 0 24px 24px 0;
-            background-color: #4285f4;
+        /* Optional: style the Google results container */
+        .gcse-searchresults-only {
+            background-color: #111;
             color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #357ae8;
         }
     </style>
+    <!-- Google Custom Search Script -->
+    <script async src="https://cse.google.com/cse.js?cx=e2d0a86623409420f"></script>
 </head>
 <body>
-    <h1>Google</h1>
-    <form action="https://www.google.com/search" method="GET" target="_blank" class="search-box">
-        <input type="text" name="q" placeholder="Search Google...">
-        <button type="submit">Search</button>
-    </form>
+    <h1>LinkEMU Search</h1>
+    <div class="search-container">
+        <!-- This renders the search box AND results inside your page -->
+        <div class="gcse-search"></div>
+    </div>
 </body>
 </html>
