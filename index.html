@@ -1,205 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Logi Play</title>
-    <link rel="icon" href="static/images/logo.png" type="image/jpeg">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: url('static/images/1567665.png') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            text-align: center;
-            overflow-y: scroll; /* force scrollbar */
-        }
+<meta charset="UTF-8" />
+<title>Logi Play</title>
+<link rel="icon" href="static/images/logo.png" type="image/jpeg" />
+<style>
+    :root{
+        --border-grad: linear-gradient(90deg, white, black) 1;
+        --accent: #38f;
+    }
+    html,body{height:100%;margin:0;}
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+        background: url('static/images/1567665.png') no-repeat center center fixed;
+        background-size: cover;
+        color: white;
+        text-align: center;
+        overflow-y: scroll;
+    }
 
-        /* 🔹 Custom slim scrollbar (Chrome, Edge, Safari) */
-        body::-webkit-scrollbar {
-            width: 8px;
-        }
-        body::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.6);
-        }
-        body::-webkit-scrollbar-thumb {
-            background: #555;
-            border-radius: 4px;
-        }
-        body::-webkit-scrollbar-thumb:hover {
-            background: #888;
-        }
+    /* slim custom scrollbar */
+    body::-webkit-scrollbar{ width: 8px; }
+    body::-webkit-scrollbar-track{ background: rgba(0,0,0,0.6); }
+    body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
+    body::-webkit-scrollbar-thumb:hover{ background:#888; }
 
-        h1 {
-            margin-top: 30px;
-            font-size: 3em;
-            text-decoration: underline;
-            text-shadow: 
-                -2px -2px 0 black,
-                2px -2px 0 black,
-               -2px  2px 0 black,
-                2px  2px 0 black;
-            display: inline-block;
-        }
+    header{ padding: 30px 20px 10px; }
+    h1{
+        margin:0;
+        font-size:3em;
+        text-decoration: underline;
+        text-shadow:
+            -2px -2px 0 black,
+             2px -2px 0 black,
+            -2px  2px 0 black,
+             2px  2px 0 black;
+        display:inline-block;
+        vertical-align: middle;
+    }
+    .logo{ vertical-align: middle; height:60px; margin-left:8px; }
 
-        .logo {
-            vertical-align: middle;
-            height: 60px;
-            margin-left: 5px;
-        }
+    /* center area */
+    .center-area{
+        height: calc(100vh - 220px); /* keep centered vertically with room for footer */
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
 
-        p {
-            font-size: 1.2em;
-            margin: 15px 0 30px;
-        }
+    .button-row{
+        display:flex;
+        gap:22px;
+        align-items:center;
+        justify-content:center;
+    }
 
-        .caption {
-            font-size: 1em;
-            color: #aaa;
-            margin-bottom: 15px;
-        }
+    .btn {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        min-width:160px;
+        padding:12px 18px;
+        font-size:1.05em; /* smaller than page title */
+        font-weight:600;
+        color: white;
+        background: rgba(0,0,0,0.65);
+        text-decoration:none;
+        cursor:pointer;
+        border:3px solid;
+        border-image: var(--border-grad);
+        border-radius:12px; /* rounded rectangle */
+        box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+        transition: transform .12s ease, background .12s;
+    }
+    .btn:hover{ transform: translateY(-3px); background: rgba(0,0,0,0.75); }
+    .btn:active{ transform: translateY(-1px); }
 
-        /* 🔹 ROM drop box */
-        #emu-box {
-            margin: 0 auto 40px;
-            padding: 20px;
-            width: 90%;
-            max-width: 600px;
-            border: 3px dashed #ccc;
-            border-radius: 10px;
-            background-color: #222;
-            position: relative;
-            cursor: pointer;
-        }
+    .btn.disabled, .btn[aria-disabled="true"]{
+        opacity:0.45;
+        cursor: default;
+        transform: none;
+        pointer-events: none; /* unclickable */
+    }
 
-        #input {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
+    /* subtle caption under heading */
+    .caption{ font-size:1em; color:#aaa; margin-top:8px; margin-bottom:18px; }
 
-        #emu-box:hover {
-            border-color: #38f;
-            background-color: #333;
-        }
-
-        /* 🔹 Emulator display box */
-        #game {
-            margin: 20px auto 0;
-            width: 60%;
-            height: 480px;
-            background: black;
-            border: 3px solid;
-            border-image: linear-gradient(90deg, white, black) 1;
-            border-radius: 0;
-        }
-
-        /* 🔹 Nav styling */
-        .nav {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-        }
-
-        .nav a {
-            color: #38f;
-            text-decoration: none;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-
-        .nav a:hover {
-            text-decoration: underline;
-        }
-
-        /* 🔹 Extra content to extend the page */
-        .extra {
-            margin: 80px auto;
-            width: 70%;
-            padding: 30px;
-            font-size: 1.2em;
-            background: rgba(0,0,0,0.5);
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-    </style>
+    /* small footer / extra */
+    .extra{ margin: 40px auto; width:70%; max-width:900px; color:rgba(255,255,255,0.9); background: rgba(0,0,0,0.45); padding:18px; border-radius:8px; border:1px solid rgba(255,255,255,0.08); }
+</style>
 </head>
 <body>
-    
-    <h1>Logi Play <img src="static/images/logo.png" alt="Logo" class="logo"></h1>
-    <p class="caption">
-        Only use ROMs that you own. Inspired by <a href="https://emulatorjs.org/" target="_blank" style="color: #38f;">EmulatorJS</a>.
-    </p>
-    <p>Drop a ROM below (GBA, SNES, etc)</p>
+    <header>
+        <h1>Logi Play <img src="static/images/logo.png" alt="logo" class="logo"></h1>
+        <div class="caption">Only use ROMs that you own. Inspired by <a href="https://emulatorjs.org/" target="_blank" style="color:var(--accent); text-decoration:none;">EmulatorJS</a>.</div>
+    </header>
 
-    <div id="emu-box">
-        <input type="file" id="input">
-        Drag ROM file or click here
-    </div>
+    <main class="center-area">
+        <div class="button-row">
+            <!-- left: Games -->
+            <a class="btn" href="games.html" title="Games">Games</a>
 
-    <div id="game"></div>
+            <!-- center: Emulator -->
+            <a class="btn" href="emulator.html" title="Emulator">Emulator</a>
 
-    <!-- 🔹 Extra scrollable content -->
-    <div class="extra">
-        <h2>About Logi Play</h2>
+            <!-- right: Coming Soon (disabled) -->
+            <button class="btn disabled" aria-disabled="true" title="Coming Soon">Coming Soon</button>
+        </div>
+    </main>
+
+    <section class="extra">
+        <h3 style="margin-top:0;">About Logi Play</h3>
         <p>
-            Logi Play is your space for exploring retro games directly in the browser.  
-            Load your own ROMs, enjoy smooth emulation, and relive classics anywhere.  
-            We believe in preserving games while respecting ownership, so please use only ROMs you legally own.
+            Welcome to Logi Play — browse the emulator, load your own legally-owned ROMs, and relive retro classics.
+            This is the start of a bigger project; more features and games will appear soon.
         </p>
-        <p>
-            Scroll to see more updates soon. This is just the beginning of Logi Play 🚀
-        </p>
-    </div>
-
-    <script>
-        const input = document.getElementById("input");
-
-        input.addEventListener("change", async () => {
-            const romFile = input.files[0];
-            const fileName = romFile.name;
-            const parts = fileName.split(".");
-            const ext = parts.pop().toLowerCase();
-            const name = parts.join(".");
-
-            const coreMap = {
-                gba: "gba", gb: "gb", gbc: "gb",
-                nes: "nes", smc: "snes", sfc: "snes", fig: "snes",
-                n64: "n64", z64: "n64", nds: "nds",
-                bin: "gen", gen: "gen", sega: "gen"
-            };
-
-            const core = coreMap[ext] || "gba";
-
-            console.log("File selected:", fileName);
-            console.log("Extension:", ext);
-            console.log("Mapped Core:", core);
-
-            const reader = new FileReader();
-
-            reader.onload = function () {
-                const blobURL = URL.createObjectURL(new Blob([reader.result]));
-
-                const script = document.createElement("script");
-                script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
-                script.onerror = () => alert("EmulatorJS failed to load. Check your internet connection.");
-                document.body.appendChild(script);
-
-                window.EJS_player = "#game";
-                window.EJS_gameUrl = blobURL;
-                window.EJS_gameName = name;
-                window.EJS_core = core;
-                window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-                window.EJS_startOnLoaded = true;
-                window.EJS_threads = (core === "nds" || core === "psp");
-            };
-
-            reader.readAsArrayBuffer(romFile);
-        });
-    </script>
+    </section>
 </body>
 </html>
