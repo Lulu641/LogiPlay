@@ -12,6 +12,22 @@
             background-size: cover;
             color: white;
             text-align: center;
+            overflow-y: scroll; /* force scrollbar */
+        }
+
+        /* 🔹 Custom slim scrollbar (Chrome, Edge, Safari) */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.6);
+        }
+        body::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+        body::-webkit-scrollbar-thumb:hover {
+            background: #888;
         }
 
         h1 {
@@ -43,14 +59,14 @@
             margin-bottom: 15px;
         }
 
-        /* 🔹 ROM drop box reverted to old style */
+        /* 🔹 ROM drop box */
         #emu-box {
             margin: 0 auto 40px;
             padding: 20px;
             width: 90%;
             max-width: 600px;
             border: 3px dashed #ccc;
-            border-radius: 10px; /* original rounded corners */
+            border-radius: 10px;
             background-color: #222;
             position: relative;
             cursor: pointer;
@@ -74,12 +90,12 @@
         /* 🔹 Emulator display box */
         #game {
             margin: 20px auto 0;
-            width: 60%; /* shorter in length */
+            width: 60%;
             height: 480px;
             background: black;
             border: 3px solid;
             border-image: linear-gradient(90deg, white, black) 1;
-            border-radius: 0; /* no rounded corners */
+            border-radius: 0;
         }
 
         /* 🔹 Nav styling */
@@ -99,6 +115,17 @@
         .nav a:hover {
             text-decoration: underline;
         }
+
+        /* 🔹 Extra content to extend the page */
+        .extra {
+            margin: 80px auto;
+            width: 70%;
+            padding: 30px;
+            font-size: 1.2em;
+            background: rgba(0,0,0,0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
     </style>
 </head>
 <body>
@@ -115,6 +142,19 @@
     </div>
 
     <div id="game"></div>
+
+    <!-- 🔹 Extra scrollable content -->
+    <div class="extra">
+        <h2>About Logi Play</h2>
+        <p>
+            Logi Play is your space for exploring retro games directly in the browser.  
+            Load your own ROMs, enjoy smooth emulation, and relive classics anywhere.  
+            We believe in preserving games while respecting ownership, so please use only ROMs you legally own.
+        </p>
+        <p>
+            Scroll to see more updates soon. This is just the beginning of Logi Play 🚀
+        </p>
+    </div>
 
     <script>
         const input = document.getElementById("input");
