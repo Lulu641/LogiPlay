@@ -20,38 +20,38 @@
     body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
     body::-webkit-scrollbar-thumb:hover{ background:#888; }
 
-    /* Top-left page title (like you requested) */
+    /* Centered title at the top */
+    header{
+        padding: 18px 20px 6px;
+        text-align:center;
+    }
     .page-title{
-        position: absolute;
-        top: 18px;
-        left: 20px;
-        margin:0;
-        font-size:3em;
+        margin:0 auto;
+        font-size:2.8em;
         text-decoration: underline;
         text-shadow:
             -2px -2px 0 black,
              2px -2px 0 black,
             -2px  2px 0 black,
              2px  2px 0 black;
+        display:inline-block;
     }
     .top-caption{
-        position: absolute;
-        top: calc(18px + 3em + 6px);
-        left: 20px;
+        margin-top:8px;
         color:#aaa;
         font-size:1em;
     }
 
-    /* layout center */
+    /* container moved up (raised) */
     .container{
         max-width:1200px;
-        margin: 120px auto 60px; /* leave room for top-left title */
+        margin: 80px auto 40px; /* raised: less top margin */
         padding: 0 20px;
     }
 
-    /* ROM drop box (kept familiar) */
+    /* ROM drop box */
     #emu-box{
-        margin: 0 auto 26px;
+        margin: 0 auto 16px;
         padding:20px;
         width:90%;
         max-width:600px;
@@ -79,17 +79,18 @@
 
     .caption-legal{ font-size:1em; color:#aaa; margin-top:8px; text-align:center; }
 
-    /* small notice / footer */
-    .info{ margin:30px auto; width:75%; color:rgba(255,255,255,0.9); background: rgba(0,0,0,0.45); padding:14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
+    .info{ margin:24px auto; width:75%; color:rgba(255,255,255,0.95); background: rgba(0,0,0,0.45); padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
 </style>
 </head>
 <body>
-    <h1 class="page-title">Logi-EMU</h1>
-    <div class="top-caption">Coming soon</div>
+    <header>
+        <h1 class="page-title">Logi-EMU</h1>
+        <div class="top-caption">Only use ROMs that you own. Inspired by <a href="https://emulatorjs.org/" target="_blank" style="color:var(--accent); text-decoration:none;">EmulatorJS</a>.</div>
+    </header>
 
     <div class="container">
         <p class="caption-legal" style="text-align:center;">
-            Only use ROMs that you own. Inspired by <a href="https://emulatorjs.org/" target="_blank" style="color:var(--accent); text-decoration:none;">EmulatorJS</a>.
+            Drop a legally-owned ROM (GBA, SNES, NES, etc.) — the emulator runs locally in your browser.
         </p>
 
         <div id="emu-box">
@@ -100,8 +101,7 @@
         <div id="game"></div>
 
         <div class="info">
-            <strong>How to use:</strong> Drop a legally-owned ROM (GBA, SNES, etc.) into the box above.
-            The emulator will load in the black player area. Your ROM files never leave your browser.
+            <strong>How it works:</strong> After you drop your ROM, the emulator loads in the black player area above. ROM data stays in your browser and is not uploaded to any server.
         </div>
     </div>
 
