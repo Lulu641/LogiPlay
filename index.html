@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Logi Play</title>
+    <title>Logi Emulator</title>
     <link rel="icon" href="static/images/OIP.jpg" type="image/jpeg">
     <style>
         body {
             margin: 0;
             font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: url('static/1567665.png') no-repeat center center fixed;
+            background: linear-gradient(to bottom, #1a1a1a 0%, #121212 100%);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             background-size: cover;
             color: white;
             text-align: center;
@@ -50,7 +52,7 @@
             max-width: 600px;
             border: 3px dashed #ccc;
             border-radius: 10px;
-            background-color: rgba(34,34,34,0.85);
+            background-color: #222;
             position: relative;
             cursor: pointer;
         }
@@ -67,7 +69,7 @@
 
         #emu-box:hover {
             border-color: #38f;
-            background-color: rgba(51,51,51,0.85);
+            background-color: #333;
         }
 
         #game {
@@ -97,9 +99,9 @@
 </head>
 <body>
     
-    <h1>Logi Play <img src="static/images/OIP.jpg" alt="Logo" class="logo"></h1>
+    <h1>Logi Emu <img src="static/images/logo.png" alt="Logo" class="logo"></h1>
     <p class="caption">
-        ⚠️ Only use ROMs that you own. Inspired by <a href="https://emulatorjs.org/" target="_blank" style="color: #38f;">EmulatorJS</a>.
+        Only use ROMs that you own. Inspired by <a href="https://emulatorjs.org/" target="_blank" style="color: #38f;">EmulatorJS</a>.
     </p>
     <p>Drop a ROM below (GBA, SNES, etc)</p>
 
