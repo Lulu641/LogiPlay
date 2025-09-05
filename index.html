@@ -26,12 +26,13 @@
     body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
     body::-webkit-scrollbar-thumb:hover{ background:#888; }
 
+    /* header - tightened */
     header{
-        padding: 18px 20px 6px; /* raised: less top padding */
+        padding: 10px 20px 6px; /* smaller top padding so content sits higher */
     }
     h1{
         margin:0;
-        font-size:2.6em; /* slightly smaller to fit better */
+        font-size:2.6em;
         text-decoration: underline;
         text-shadow:
             -2px -2px 0 black,
@@ -43,19 +44,21 @@
     }
     .logo{ vertical-align: middle; height:56px; margin-left:8px; }
 
-    .caption{ font-size:0.98em; color:#aaa; margin-top:8px; margin-bottom:12px; }
+    .caption{ font-size:0.98em; color:#aaa; margin-top:8px; margin-bottom:8px; }
 
-    /* center area - raised and tighter */
+    /* center area - moved near top of page */
     .center-area{
-        height: calc(100vh - 180px); /* raised: reduce total vertical space */
+        /* reduce vertical space and push content up */
+        min-height: calc(100vh * 0.18); /* small vertical area near top */
         display:flex;
-        align-items:center;
+        align-items:flex-start; /* align near top */
         justify-content:center;
+        padding-top:10px; /* small gap below header */
     }
 
     .button-row{
         display:flex;
-        gap:16px; /* slightly less gap to bring buttons closer */
+        gap:16px;
         align-items:center;
         justify-content:center;
     }
@@ -66,7 +69,7 @@
         justify-content:center;
         min-width:150px;
         padding:10px 16px;
-        font-size:1.0em; /* smaller button text per your request */
+        font-size:1.0em;
         font-weight:600;
         color: white;
         background: rgba(0,0,0,0.65);
@@ -74,7 +77,7 @@
         cursor:pointer;
         border:3px solid;
         border-image: var(--border-grad);
-        border-radius:12px; /* rounded rectangle */
+        border-radius:12px;
         box-shadow: 0 6px 18px rgba(0,0,0,0.45);
         transition: transform .12s ease, background .12s;
     }
@@ -88,40 +91,43 @@
         pointer-events: none; /* unclickable */
     }
 
-    /* About / features area (raised, more content) */
+    /* About / features area - moved up and enlarged to fill more of the page */
     .extra{
-        margin: 28px auto 48px; /* moved up (smaller top margin) */
-        width:85%;
-        max-width:1100px;
+        margin: 12px auto 40px; /* moved up */
+        width:92%;
+        max-width:1200px; /* larger max width */
         color:rgba(255,255,255,0.95);
-        background: rgba(0,0,0,0.45);
-        padding:20px;
+        background: rgba(0,0,0,0.50);
+        padding:28px; /* increased padding */
         border-radius:10px;
         border:1px solid rgba(255,255,255,0.06);
-        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        box-shadow: 0 10px 36px rgba(0,0,0,0.55);
+        min-height: calc(100vh - 200px); /* fill most of remaining page */
+        box-sizing: border-box;
     }
 
     .features{
         display:flex;
-        gap:18px;
+        gap:20px;
         flex-wrap:wrap;
         justify-content:space-between;
-        margin-top:12px;
+        margin-top:16px;
     }
     .feature{
         flex:1 1 30%;
-        min-width:220px;
+        min-width:240px;
         background: rgba(255,255,255,0.03);
-        padding:14px;
+        padding:18px;
         border-radius:8px;
         border:1px solid rgba(255,255,255,0.04);
     }
-    .feature h4{ margin:6px 0 8px; font-size:1.1em; }
-    .feature p{ margin:0; color:#dcdcdc; font-size:0.98em; line-height:1.4; }
+    .feature h4{ margin:6px 0 10px; font-size:1.15em; }
+    .feature p{ margin:0; color:#e6e6e6; font-size:1.02em; line-height:1.45; }
 
-    @media (max-width:820px){
+    @media (max-width:920px){
         .features{ flex-direction:column; gap:12px;}
-        .center-area{ height: auto; padding:36px 0; }
+        .center-area{ min-height: auto; padding:18px 0; }
+        .extra{ min-height: auto; padding:20px; }
     }
 </style>
 </head>
@@ -132,7 +138,7 @@
     </header>
 
     <main class="center-area">
-        <div class="button-row">
+        <div class="button-row" role="navigation" aria-label="Main actions">
             <!-- left: Games -->
             <a class="btn" href="games.html" title="Games">Games</a>
 
@@ -144,31 +150,32 @@
         </div>
     </main>
 
-    <section class="extra">
-        <h3 style="margin-top:0;">About Logi Play</h3>
-        <p>
-            Logi Play is a lightweight browser-based hub for retro gaming and web-first emulation. Load your legally-owned ROMs right in the browser — nothing leaves your machine.
+    <section class="extra" aria-labelledby="about-heading">
+        <h3 id="about-heading" style="margin-top:0; font-size:1.6em;">About Logi Play</h3>
+        <p style="font-size:1.05em; color:#e9e9e9;">
+            Logi Play is your lightweight, browser-first hub for retro gaming and secure, local emulation.
+            Load legally-owned ROMs directly in your browser — no uploads, no external storage — just local playback powered by EmulatorJS.
         </p>
 
         <div class="features" aria-hidden="false">
             <div class="feature">
                 <h4>Emulator (Logi-EMU)</h4>
-                <p>Fast, in-browser emulation powered by EmulatorJS. Supports GBA, SNES, NES, N64 and more — play your legally-owned games without installing extra software.</p>
+                <p>Quickly load and play ROMs in the browser. Supports a broad set of cores (GBA, SNES, NES, N64, and more). Performance is optimized for modern devices.</p>
             </div>
 
             <div class="feature">
                 <h4>Games Directory</h4>
-                <p>A future catalog for curated homebrew and free-to-play browser games. The directory will include descriptions, categories, and direct browser play when added.</p>
+                <p>Planned curated directory for browser-friendly homebrew/free games. The future directory will include categories, tags, and instant play links.</p>
             </div>
 
             <div class="feature">
-                <h4>Privacy & Safety</h4>
-                <p>We emphasize user privacy: ROMs are loaded locally in your browser and not uploaded to our servers. Always use content you own and respect copyright rules.</p>
+                <h4>Privacy & Security</h4>
+                <p>ROMs remain in your browser and are not uploaded. We encourage respecting IP ownership — only use ROMs you legally own.</p>
             </div>
         </div>
 
-        <p style="margin-top:14px;color:#cfcfcf;">
-            Want features or a game added? Hit me up on the project repo — feature requests are welcome.
+        <p style="margin-top:18px;color:#d6d6d6;">
+            Want features added or a specific game supported? Open an issue on the project repo — community suggestions help shape the roadmap.
         </p>
     </section>
 </body>
