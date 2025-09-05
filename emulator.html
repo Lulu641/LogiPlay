@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Logi-EMU</title>
+<link rel="icon" href="static/images/logo.png" type="image/jpeg" />
+<style>
+    :root{ --border-grad: linear-gradient(90deg, white, black) 1; --accent:#38f; }
+    html,body{height:100%;margin:0;}
+    body{
+        margin:0;
+        font-family:'Segoe UI','Helvetica Neue',sans-serif;
+        background: url('static/images/1567665.png') no-repeat center center fixed;
+        background-size: cover;
+        color:white;
+        overflow-y:scroll;
+    }
+    body::-webkit-scrollbar{ width: 8px; }
+    body::-webkit-scrollbar-track{ background: rgba(0,0,0,0.6); }
+    body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
+    body::-webkit-scrollbar-thumb:hover{ background:#888; }
+
+    /* Top-left page title (like you requested) */
+    .page-title{
+        position: absolute;
+        top: 18px;
+        left: 20px;
+        margin:0;
+        font-size:3em;
+        text-decoration: underline;
+        text-shadow:
+            -2px -2px 0 black,
+             2px -2px 0 black,
+            -2px  2px 0 black,
+             2px  2px 0 black;
+    }
+    .top-caption{
+        position: absolute;
+        top: calc(18px + 3em + 6px);
+        left: 20px;
+        color:#aaa;
+        font-size:1em;
+    }
+
+    /* layout center */
+    .container{
+        max-width:1200px;
+        margin: 120px auto 60px; /* leave room for top-left title */
+        padding: 0 20px;
+    }
+
+    /* ROM drop box (kept familiar) */
+    #emu-box{
+        margin: 0 auto 26px;
+        padding:20px;
+        width:90%;
+        max-width:600px;
+        border:3px dashed #ccc;
+        border-radius:10px;
+        background-color:#222;
+        position:relative;
+        cursor:pointer;
+    }
+    #emu-box:hover{ border-color:var(--accent); background-color:#333; }
+
+    #input{ position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+
+    /* Emulator display */
+    #game{
+        margin:18px auto 0;
+        width:60%;
+        max-width:920px;
+        height:480px;
+        background:black;
+        border:3px solid;
+        border-image: var(--border-grad);
+        border-radius:0;
+    }
+
+    .caption-legal{ font-size:1em; color:#aaa; margin-top:8px; text-align:center; }
+
+    /* small notice / footer */
+    .info{ margin:30px auto; width:75%; color:rgba(255,255,255,0.9); background: rgba(0,0,0,0.45); padding:14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
+</style>
+</head>
+<body>
+    <h1 class="page-title">Logi-EMU</h1>
+    <div class="top-caption">Coming soon</div>
+
+    <div class="container">
+        <p class="caption-legal" style="text-align:center;">
+            Only use ROMs that you own. Inspired by <a href="https://emulatorjs.org/" target="_blank" style="color:var(--accent); text-decoration:none;">EmulatorJS</a>.
+        </p>
+
+        <div id="emu-box">
+            <input type="file" id="input" accept="*/*">
+            Drag ROM file or click here
+        </div>
+
+        <div id="game"></div>
+
+        <div class="info">
+            <strong>How to use:</strong> Drop a legally-owned ROM (GBA, SNES, etc.) into the box above.
+            The emulator will load in the black player area. Your ROM files never leave your browser.
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById("input");
+
+        input.addEventListener("change", async () => {
+            const romFile = input.files[0];
+            if (!romFile) return;
+            const fileName = romFile.name;
+            const parts = fileName.split(".");
+            const ext = parts.pop().toLowerCase();
+            const name = parts.join(".");
+
+            const coreMap = {
+                gba: "gba", gb: "gb", gbc: "gb",
+                nes: "nes", smc: "snes", sfc: "snes", fig: "snes",
+                n64: "n64", z64: "n64", nds: "nds",
+                bin: "gen", gen: "gen", sega: "gen"
+            };
+            const core = coreMap[ext] || "gba";
+
+            console.log("File selected:", fileName, "core:", core);
+
+            const reader = new FileReader();
+            reader.onload = function () {
+                const blobURL = URL.createObjectURL(new Blob([reader.result]));
+
+                const script = document.createElement("script");
+                script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+                script.onerror = () => alert("EmulatorJS failed to load. Check your internet connection.");
+                document.body.appendChild(script);
+
+                window.EJS_player = "#game";
+                window.EJS_gameUrl = blobURL;
+                window.EJS_gameName = name;
+                window.EJS_core = core;
+                window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+                window.EJS_startOnLoaded = true;
+                window.EJS_threads = (core === "nds" || core === "psp");
+            };
+            reader.readAsArrayBuffer(romFile);
+        });
+    </script>
+</body>
+</html>
