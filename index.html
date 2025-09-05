@@ -43,14 +43,15 @@
             margin-bottom: 15px;
         }
 
+        /* 🔹 ROM drop box reverted to old style */
         #emu-box {
             margin: 0 auto 40px;
             padding: 20px;
-            width: 60%;
-            border: 3px solid;
-            border-image: linear-gradient(90deg, white, black) 1;
-            border-radius: 0;
-            background-color: rgba(34,34,34,0.85);
+            width: 90%;
+            max-width: 600px;
+            border: 3px dashed #ccc;
+            border-radius: 10px; /* original rounded corners */
+            background-color: #222;
             position: relative;
             cursor: pointer;
         }
@@ -66,13 +67,14 @@
         }
 
         #emu-box:hover {
-            border-image: linear-gradient(90deg, white, black) 1;
-            background-color: rgba(51,51,51,0.85);
+            border-color: #38f;
+            background-color: #333;
         }
 
+        /* 🔹 Emulator display box */
         #game {
             margin: 20px auto 0;
-            width: 60%; /* make it shorter in length */
+            width: 60%; /* shorter in length */
             height: 480px;
             background: black;
             border: 3px solid;
