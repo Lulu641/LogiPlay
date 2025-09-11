@@ -3,33 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <title>Logi-PS2 — Play!.js</title>
-<style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    font-family: 'Segoe UI','Helvetica Neue',sans-serif;
-    background: url('static/images/1567665.png') no-repeat center center fixed;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-  }
+<head>
+    <meta charset="UTF-8" />
+    <title>Logi-EMU — EmulatorJS</title>
+    <link rel="icon" href="static/images/logo.png" type="image/jpeg" />
+    <style>
+        :root{ --border-grad: linear-gradient(90deg, white, black) 1; --accent:#38f; }
+        html,body{height:100%;margin:0;}
+        body{
+            margin:0;
+            font-family:'Segoe UI','Helvetica Neue',sans-serif;
+            background: url('static/images/1567665.png') no-repeat center center fixed;
+            background-size: cover;
+            color:white;
+            overflow-y:scroll;
+        }
+        body::-webkit-scrollbar{ width: 8px; }
+        body::-webkit-scrollbar-track{ background: rgba(0,0,0,0.6); }
+        body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
+        body::-webkit-scrollbar-thumb:hover{ background:#888; }
 
-  button {
-    padding: 16px 32px;
-    font-size: 1.2em;
-    border: 2px solid white;
-    border-radius: 8px;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: rgba(0,0,0,0.8);
-    border-color: #38f;
-  }
+        /* Centered title at the top */
+        header{
+            padding: 18px 20px 6px;
+            text-align:center;
+        }
+        .page-title{
+            margin:0 auto;
+            font-size:2.8em;
+            text-decoration: underline;
+            text-shadow:
+                -2px -2px 0 black,
+                 2px -2px 0 black,
+                -2px  2px 0 black,
+                 2px  2px 0 black;
+            display:inline-block;
+        }
+        .top-caption{
+            margin-top:8px;
+            color:#aaa;
+            font-size:1em;
+        }
 </style>
 </head>
 <body>
