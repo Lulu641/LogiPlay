@@ -1,55 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-<meta charset="UTF-8">
-<title>Logi-PS2 — Play!.js</title>
-<style>
-  html, body {
-    height: 100%;
-    margin: 0;
-    font-family: 'Segoe UI','Helvetica Neue',sans-serif;
-    background: url('static/images/1567665.png') no-repeat center center fixed;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-  }
-
-  button {
-    padding: 16px 32px;
-    font-size: 1.2em;
-    border: 2px solid white;
-    border-radius: 8px;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: rgba(0,0,0,0.8);
-    border-color: #38f;
-  }
-</style>
 </head>
+
 <body>
-  <button onclick="openGame()">Open Emulator</button>
-
-  <script>
-    function openGame() {
-      var win = window.open('about:blank', '_blank', 'width=1280,height=720');
-      if (!win) {
-        alert('Popup blocked! Please allow popups for this site.');
-        return;
-      }
-
-      var iframe = win.document.createElement('iframe');
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      iframe.style.border = 'none';
-      iframe.src = 'https://playjs.purei.org/';
-      win.document.body.appendChild(iframe);
-    }
-  </script>
+	<button onclick="openGame()">Open Game</button>
+	<script>
+		function openGame() {
+var win = window.open()
+var url = "https://playjs.purei.org/"
+var iframe = win.document.createElement('iframe')
+iframe.style.width = "100%";
+iframe.style.height = "100%";
+iframe.style.border = "none";
+iframe.src = url
+win.document.body.appendChild(iframe)
+}
+	</script>
 </body>
+
 </html>
