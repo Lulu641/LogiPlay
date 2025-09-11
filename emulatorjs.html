@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Logi-EMU — EmulatorJS</title>
+<title>Logi-PS2 — Play!.js</title>
 <link rel="icon" href="static/images/logo.png" type="image/jpeg" />
 <style>
     :root{ --border-grad: linear-gradient(90deg, white, black) 1; --accent:#38f; }
@@ -20,36 +20,14 @@
     body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
     body::-webkit-scrollbar-thumb:hover{ background:#888; }
 
-    /* Centered title at the top */
-    header{
-        padding: 18px 20px 6px;
-        text-align:center;
-    }
-    .page-title{
-        margin:0 auto;
-        font-size:2.8em;
-        text-decoration: underline;
-        text-shadow:
-            -2px -2px 0 black,
-             2px -2px 0 black,
-            -2px  2px 0 black,
-             2px  2px 0 black;
-        display:inline-block;
-    }
-    .top-caption{
-        margin-top:8px;
-        color:#aaa;
-        font-size:1em;
-    }
+    header{ padding: 18px 20px 6px; text-align:center; }
+    .page-title{ margin:0 auto; font-size:2.6em; text-decoration: underline;
+        text-shadow:-2px -2px 0 black,2px -2px 0 black,-2px 2px 0 black,2px 2px 0 black;
+        display:inline-block; }
+    .top-caption{ margin-top:8px; color:#aaa; font-size:1em; }
 
-    /* container moved up (raised) */
-    .container{
-        max-width:1200px;
-        margin: 80px auto 40px; /* raised: less top margin */
-        padding: 0 20px;
-    }
+    .container{ max-width:1200px; margin: 60px auto 40px; padding: 0 20px; }
 
-    /* ROM drop box */
     #emu-box{
         margin: 0 auto 16px;
         padding:20px;
@@ -60,12 +38,11 @@
         background-color:#222;
         position:relative;
         cursor:pointer;
+        text-align:center;
     }
     #emu-box:hover{ border-color:var(--accent); background-color:#333; }
-
     #input{ position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
 
-    /* Emulator display */
     #game{
         margin:18px auto 0;
         width:60%;
@@ -75,76 +52,233 @@
         border:3px solid;
         border-image: var(--border-grad);
         border-radius:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#777;
+        font-weight:600;
     }
 
     .caption-legal{ font-size:1em; color:#aaa; margin-top:8px; text-align:center; }
-
     .info{ margin:24px auto; width:75%; color:rgba(255,255,255,0.95); background: rgba(0,0,0,0.45); padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
+    .error{ color:#ffb3b3; }
+    a.btn { display:inline-block; margin-top:10px; padding:8px 12px; border-radius:8px; color:white; text-decoration:none; background:rgba(0,0,0,0.6); border:2px solid; border-image: var(--border-grad); }
 </style>
 </head>
 <body>
     <header>
-        <h1 class="page-title">Logi-EMU (EmulatorJS)</h1>
-        <div class="top-caption">Only use ROMs that you own. Powered by <a href="https://emulatorjs.org/" target="_blank" style="color:var(--accent); text-decoration:none;">EmulatorJS</a>.</div>
+        <h1 class="page-title">Logi-PS2 (Play!.js)</h1>
+        <div class="top-caption">Only use PS2 images that you legally own. Powered by Play!.js (self-host build).</div>
     </header>
 
     <div class="container">
         <p class="caption-legal" style="text-align:center;">
-            Drop a legally-owned ROM (GBA, SNES, NES, etc.) — the emulator runs locally in your browser.
+            Drop a legally-owned PS2 image (ISO, CSO, CHD, BIN, ISZ, etc.) — the emulator runs locally in your browser.
         </p>
 
         <div id="emu-box">
-            <input type="file" id="input" accept="*/*">
-            Drag ROM file or click here
+            <input type="file" id="input" accept=".iso,.cso,.chd,.isz,.bin,.img,.raw,.pbp">
+            Drag PS2 image here or click to choose
         </div>
 
-        <div id="game"></div>
+        <div id="game">Play!.js not loaded yet.</div>
 
-        <div class="info">
-            <strong>How it works:</strong> After you drop your ROM, the emulator loads in the black player area above. ROM data stays in your browser and is not uploaded to any server.
+        <div class="info" id="status">
+            <strong>Status:</strong> waiting for Play!.js files at <code>/static/playjs/Play.js</code> and <code>/static/playjs/Play.wasm</code>.
+            <div style="margin-top:8px">
+                <a class="btn" href="index.html">← Back to Logi Play</a>
+                <a class="btn" href="https://playjs.purei.org/" target="_blank" rel="noopener">Open official Play!.js site</a>
+            </div>
         </div>
     </div>
 
-    <script>
-        const input = document.getElementById("input");
+<script>
+/*
+  playstation.html loader for Play!.js (self-host)
+  - Place your built Play.js + Play.wasm at:
+      /static/playjs/Play.js
+      /static/playjs/Play.wasm
+  - This script will:
+      1) load Play.js (Emscripten glue),
+      2) configure locateFile to find Play.wasm,
+      3) wait for runtime init,
+      4) write the dropped ISO into the Emscripten FS,
+      5) try to call common startup functions to run the image.
+  If the build exposes different function names I will adapt the final call — after you upload the files,
+  open the browser console and paste the `Module` keys or exposed globals and I will update this to call the exact API.
+*/
 
-        input.addEventListener("change", async () => {
-            const romFile = input.files[0];
-            if (!romFile) return;
-            const fileName = romFile.name;
-            const parts = fileName.split(".");
-            const ext = parts.pop().toLowerCase();
-            const name = parts.join(".");
+const PLAYJS_BASE = '/static/playjs/';
+const PLAYJS_JS = PLAYJS_BASE + 'Play.js';
+const PLAYJS_WASM = PLAYJS_BASE + 'Play.wasm';
 
-            const coreMap = {
-                gba: "gba", gb: "gb", gbc: "gb",
-                nes: "nes", smc: "snes", sfc: "snes", fig: "snes",
-                n64: "n64", z64: "n64", nds: "nds",
-                bin: "gen", gen: "gen", sega: "gen"
-            };
-            const core = coreMap[ext] || "gba";
+const input = document.getElementById('input');
+const statusEl = document.getElementById('status');
+const gameEl = document.getElementById('game');
 
-            console.log("File selected:", fileName, "core:", core);
+function setStatus(txt, isError=false){
+  statusEl.innerHTML = `<strong>Status:</strong> ${txt}`;
+  statusEl.classList.toggle('error', !!isError);
+  console.log('Play!.js status:', txt);
+}
 
-            const reader = new FileReader();
-            reader.onload = function () {
-                const blobURL = URL.createObjectURL(new Blob([reader.result]));
+// Load Play.js (Emscripten)
+async function loadPlayJSEnv(){
+  setStatus('Loading Play.js from ' + PLAYJS_JS + ' ...');
 
-                const script = document.createElement("script");
-                script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
-                script.onerror = () => alert("EmulatorJS failed to load. Check your internet connection.");
-                document.body.appendChild(script);
+  // Prepare Module config used by many Emscripten builds
+  window.Module = window.Module || {};
+  window.Module.locateFile = function(path){
+    // ensure wasm is loaded from our static folder
+    if (path.endsWith('.wasm')) return PLAYJS_WASM;
+    return PLAYJS_BASE + path;
+  };
+  // optional logging hooks
+  window.Module.print = (s) => console.log('[Play.js]', s);
+  window.Module.printErr = (s) => console.error('[Play.js]', s);
 
-                window.EJS_player = "#game";
-                window.EJS_gameUrl = blobURL;
-                window.EJS_gameName = name;
-                window.EJS_core = core;
-                window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-                window.EJS_startOnLoaded = true;
-                window.EJS_threads = (core === "nds" || core === "psp");
-            };
-            reader.readAsArrayBuffer(romFile);
-        });
-    </script>
+  // inject script
+  await new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = PLAYJS_JS;
+    s.onload = () => { setStatus('Play.js loaded — initializing runtime...'); resolve(); };
+    s.onerror = (e) => reject(new Error('Failed to load Play.js at ' + PLAYJS_JS));
+    document.body.appendChild(s);
+  });
+
+  // wait for runtime initialization
+  // many builds call Module.onRuntimeInitialized when ready
+  if (typeof window.Module.onRuntimeInitialized === 'function') {
+    await new Promise((res) => {
+      const orig = window.Module.onRuntimeInitialized;
+      window.Module.onRuntimeInitialized = function(){
+        try { orig(); } catch(e){}
+        res();
+      };
+      // if module already initialized it may call immediately
+    });
+  } else {
+    // fallback small delay if runtime doesn't use the hook
+    await new Promise(r => setTimeout(r, 700));
+  }
+
+  setStatus('Play.js runtime initialized. Ready — drop an image file.');
+  gameEl.textContent = 'Runtime ready. Drop a PS2 image to begin.';
+}
+
+// convert file to Uint8Array
+function fileToUint8(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(new Uint8Array(reader.result));
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+// write file into Emscripten FS & attempt to start emulator
+async function runFileInPlayJS(file){
+  try{
+    setStatus('Preparing file: ' + file.name);
+    const data = await fileToUint8(file);
+
+    if (!window.FS){
+      setStatus('Play runtime FS not available. Ensure Play.js loaded correctly.', true);
+      console.error('No FS global on page — Module keys:', Object.keys(window.Module || {}));
+      return;
+    }
+
+    // create a /media or /roms folder in FS
+    const dir = '/roms';
+    try { window.FS.mkdir(dir); } catch(e){}
+    const path = dir + '/' + file.name;
+
+    // prefer FS.writeFile if available
+    if (typeof window.FS.writeFile === 'function'){
+      window.FS.writeFile(path, data, { encoding: 'binary' });
+    } else if (typeof window.FS_createDataFile === 'function'){
+      window.FS_createDataFile(dir, file.name, data, true, true);
+    } else {
+      setStatus('No supported FS write method found on runtime. See console for details.', true);
+      console.error('FS methods:', Object.keys(window.FS || {}));
+      return;
+    }
+
+    setStatus('Wrote image to virtual FS at ' + path);
+
+    // Try several common entry points (this depends on the Play.js build)
+    const candidateCalls = [
+      // common names used in some builds (may need editing)
+      { type: 'function', name: 'runGame' },
+      { type: 'function', name: 'loadGame' },
+      { type: 'function', name: 'StartGame' },
+      { type: 'function', name: 'play_load_game' },
+      { type: 'function', name: 'Play_load' },
+      // fallback: attempt Module.ccall('main', ...) — complex, may not work
+      { type: 'ccall', name: 'main' }
+    ];
+
+    let started = false;
+    for (const c of candidateCalls){
+      if (c.type === 'function' && typeof window[c.name] === 'function'){
+        try{
+          setStatus('Starting emulator via function: ' + c.name);
+          window[c.name](path); // many implementations accept a path string
+          started = true;
+          break;
+        }catch(err){
+          console.warn('Attempt to call', c.name, 'failed:', err);
+        }
+      } else if (c.type === 'ccall' && typeof window.Module.ccall === 'function'){
+        try{
+          setStatus('Calling main via Module.ccall (fallback)');
+          // This attempt likely won't work without proper argv, but we try a simple call
+          window.Module.ccall('main', 'number', ['number','number'], [0,0]);
+          started = true;
+          break;
+        }catch(err){
+          console.warn('Module.ccall(main) attempt failed:', err);
+        }
+      }
+    }
+
+    if (!started){
+      setStatus('File written but emulator did not auto-start. See console for available globals; I can adapt this loader to the exact Play.js build.', true);
+      console.log('Available globals (sample):', Object.keys(window).slice(0,200));
+      gameEl.textContent = 'Image loaded to FS: ' + path + ' — emulator did not auto-start.';
+    } else {
+      gameEl.textContent = 'Running: ' + file.name;
+    }
+
+  }catch(err){
+    console.error(err);
+    setStatus('Error loading image: ' + err.message, true);
+  }
+}
+
+// UI wiring
+input.addEventListener('change', (e) => {
+  const f = e.target.files && e.target.files[0];
+  if (f) runFileInPlayJS(f);
+});
+
+// drag/drop
+const box = document.getElementById('emu-box');
+box.addEventListener('dragover', e => { e.preventDefault(); box.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#38f'; });
+box.addEventListener('dragleave', e => { e.preventDefault(); box.style.borderColor = ''; });
+box.addEventListener('drop', e => {
+  e.preventDefault();
+  box.style.borderColor = '';
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) runFileInPlayJS(f);
+});
+
+// attempt to load Play.js runtime on page load
+loadPlayJSEnv().catch(err=>{
+  console.error(err);
+  setStatus('Failed to load Play.js: ' + err.message + ' — ensure Play.js & Play.wasm are hosted at ' + PLAYJS_BASE, true);
+  gameEl.textContent = 'Play.js failed to load. Open console for details.';
+});
+</script>
 </body>
 </html>
