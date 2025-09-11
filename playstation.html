@@ -1,221 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Play!.js — Self-host (Logi Play)</title>
+<meta charset="UTF-8" />
+<title>Logi-PS2 — Play!.js</title>
 <link rel="icon" href="static/images/logo.png" type="image/jpeg" />
 <style>
-  :root{ --border-grad: linear-gradient(90deg, white, black) 1; --accent:#38f; }
-  html,body{height:100%;margin:0;font-family:'Segoe UI','Helvetica Neue',sans-serif;background: url('static/images/1567665.png') no-repeat center center fixed;background-size:cover;color:white;}
-  body{display:flex;flex-direction:column;align-items:center;padding:20px;gap:14px}
-  header{text-align:center}
-  h1{margin:0;font-size:2.2rem;text-decoration:underline;text-shadow:-2px -2px 0 black,2px -2px 0 black,-2px 2px 0 black,2px 2px 0 black}
-  .caption-legal{color:#ccc;text-align:center}
-  #emu-box{width:90%;max-width:640px;padding:20px;border:3px dashed #ccc;border-radius:10px;background:#222;cursor:pointer;position:relative;text-align:center}
-  #emu-box:hover{border-color:var(--accent);background:#333}
-  #input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
-  #game{width:100%;max-width:920px;height:480px;background:#000;border:3px solid;border-image:var(--border-grad);margin-top:14px;display:flex;align-items:center;justify-content:center;color:#666}
-  .info{max-width:920px;background:rgba(0,0,0,0.45);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);color:#ddd;text-align:center}
-  .error{color:#ffb3b3}
+    :root{ --border-grad: linear-gradient(90deg, white, black) 1; --accent:#38f; }
+    html,body{height:100%;margin:0;}
+    body{
+        margin:0;
+        font-family:'Segoe UI','Helvetica Neue',sans-serif;
+        background: url('static/images/1567665.png') no-repeat center center fixed;
+        background-size: cover;
+        color:white;
+        overflow-y:scroll;
+    }
+    body::-webkit-scrollbar{ width: 8px; }
+    body::-webkit-scrollbar-track{ background: rgba(0,0,0,0.6); }
+    body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
+    body::-webkit-scrollbar-thumb:hover{ background:#888; }
+
+    header{ padding: 18px 20px 6px; text-align:center; }
+    .page-title{ margin:0 auto; font-size:2.6em; text-decoration: underline;
+        text-shadow:-2px -2px 0 black,2px -2px 0 black,-2px 2px 0 black,2px 2px 0 black;
+        display:inline-block; }
+    .top-caption{ margin-top:8px; color:#aaa; font-size:1em; }
+
+    .container{ max-width:1200px; margin: 60px auto 40px; padding: 0 20px; }
+
+    #emu-box{
+        margin: 0 auto 16px;
+        padding:20px;
+        width:90%;
+        max-width:600px;
+        border:3px dashed #ccc;
+        border-radius:10px;
+        background-color:#222;
+        position:relative;
+        cursor:pointer;
+        text-align:center;
+    }
+    #emu-box:hover{ border-color:var(--accent); background-color:#333; }
+    #input{ position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+
+    #game{
+        margin:18px auto 0;
+        width:60%;
+        max-width:920px;
+        height:480px;
+        background:black;
+        border:3px solid;
+        border-image: var(--border-grad);
+        border-radius:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#777;
+        font-weight:600;
+    }
+
+    .caption-legal{ font-size:1em; color:#aaa; margin-top:8px; text-align:center; }
+    .info{ margin:24px auto; width:75%; color:rgba(255,255,255,0.95); background: rgba(0,0,0,0.45); padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); }
+    .error{ color:#ffb3b3; }
+    a.btn { display:inline-block; margin-top:10px; padding:8px 12px; border-radius:8px; color:white; text-decoration:none; background:rgba(0,0,0,0.6); border:2px solid; border-image: var(--border-grad); }
 </style>
 </head>
 <body>
-  <header>
-    <h1>Logi-PS2 (Play!.js)</h1>
-    <div class="top-caption">Self-hosted Play!.js — drop a legally-owned PS2 image to play.</div>
-  </header>
+    <header>
+        <h1 class="page-title">Logi-PS2 (Play!.js)</h1>
+        <div class="top-caption">Only use PS2 images that you legally own. Powered by Play!.js (self-host build).</div>
+    </header>
 
-  <p class="caption-legal">Drop a legally-owned PS2 game (ISO, CSO, CHD, BIN, etc.). The emulator will run locally in your browser.</p>
+    <div class="container">
+        <p class="caption-legal" style="text-align:center;">
+            Drop a legally-owned PS2 image (ISO, CSO, CHD, BIN, ISZ, etc.) — the emulator runs locally in your browser.
+        </p>
 
-  <div id="emu-box">
-    <input id="input" type="file" accept=".iso,.cso,.chd,.bin,.isz,.elf,.img,.pbp">
-    Drag PS2 image here or click to select
-  </div>
+        <div id="emu-box">
+            <input type="file" id="input" accept=".iso,.cso,.chd,.isz,.bin,.img,.raw,.pbp">
+            Drag PS2 image here or click to choose
+        </div>
 
-  <div id="game">Emulator not loaded yet.</div>
+        <div id="game">Play!.js not loaded yet.</div>
 
-  <div class="info" id="status">Status: waiting for Play.js files in <code>/static/playjs/</code>. If you haven't uploaded Play.js & Play.wasm, follow the instructions in the comments below.</div>
+        <div class="info" id="status">
+            <strong>Status:</strong> waiting for Play!.js files at <code>/static/playjs/Play.js</code> and <code>/static/playjs/Play.wasm</code>.
+            <div style="margin-top:8px">
+                <a class="btn" href="index.html">← Back to Logi Play</a>
+                <a class="btn" href="https://playjs.purei.org/" target="_blank" rel="noopener">Open official Play!.js site</a>
+            </div>
+        </div>
+    </div>
 
-  <script>
-  /* -------------------------
-     CONFIG — path to Play.js / Play.wasm on your site
-     Put the web build files from Play! (Play.js + Play.wasm) at:
-       /static/playjs/Play.js
-       /static/playjs/Play.wasm
-     ------------------------- */
-  const PLAYJS_BASE = '/static/playjs/';
-  const PLAYJS_JS = PLAYJS_BASE + 'Play.js';      // adjust if the file has a different name
-  const PLAYJS_WASM = PLAYJS_BASE + 'Play.wasm';  // adjust if the file has a different name
+<script>
+/*
+  playstation.html loader for Play!.js (self-host)
+  - Place your built Play.js + Play.wasm at:
+      /static/playjs/Play.js
+      /static/playjs/Play.wasm
+  - This script will:
+      1) load Play.js (Emscripten glue),
+      2) configure locateFile to find Play.wasm,
+      3) wait for runtime init,
+      4) write the dropped ISO into the Emscripten FS,
+      5) try to call common startup functions to run the image.
+  If the build exposes different function names I will adapt the final call — after you upload the files,
+  open the browser console and paste the `Module` keys or exposed globals and I will update this to call the exact API.
+*/
 
-  const statusEl = document.getElementById('status');
-  const gameEl = document.getElementById('game');
-  const input = document.getElementById('input');
+const PLAYJS_BASE = '/static/playjs/';
+const PLAYJS_JS = PLAYJS_BASE + 'Play.js';
+const PLAYJS_WASM = PLAYJS_BASE + 'Play.wasm';
 
-  function setStatus(t, isErr = false){
-    statusEl.innerHTML = 'Status: ' + t;
-    statusEl.classList.toggle('error', !!isErr);
-  }
+const input = document.getElementById('input');
+const statusEl = document.getElementById('status');
+const gameEl = document.getElementById('game');
 
-  // Try to load Play.js (Emscripten module). If files are missing, user will see an error message.
-  async function loadPlayJS(){
-    setStatus('Loading Play.js from ' + PLAYJS_JS + ' ...');
-    try {
-      // Create Module config expected by Emscripten builds
-      window.Module = window.Module || {};
-      // locateFile used by Emscripten to find the wasm file if referenced
-      window.Module.locateFile = function(path, prefix) {
-        // If wasm requested, provide the hosted path
-        if (path.endsWith('.wasm')) return PLAYJS_WASM;
-        return PLAYJS_BASE + path;
+function setStatus(txt, isError=false){
+  statusEl.innerHTML = `<strong>Status:</strong> ${txt}`;
+  statusEl.classList.toggle('error', !!isError);
+  console.log('Play!.js status:', txt);
+}
+
+// Load Play.js (Emscripten)
+async function loadPlayJSEnv(){
+  setStatus('Loading Play.js from ' + PLAYJS_JS + ' ...');
+
+  // Prepare Module config used by many Emscripten builds
+  window.Module = window.Module || {};
+  window.Module.locateFile = function(path){
+    // ensure wasm is loaded from our static folder
+    if (path.endsWith('.wasm')) return PLAYJS_WASM;
+    return PLAYJS_BASE + path;
+  };
+  // optional logging hooks
+  window.Module.print = (s) => console.log('[Play.js]', s);
+  window.Module.printErr = (s) => console.error('[Play.js]', s);
+
+  // inject script
+  await new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = PLAYJS_JS;
+    s.onload = () => { setStatus('Play.js loaded — initializing runtime...'); resolve(); };
+    s.onerror = (e) => reject(new Error('Failed to load Play.js at ' + PLAYJS_JS));
+    document.body.appendChild(s);
+  });
+
+  // wait for runtime initialization
+  // many builds call Module.onRuntimeInitialized when ready
+  if (typeof window.Module.onRuntimeInitialized === 'function') {
+    await new Promise((res) => {
+      const orig = window.Module.onRuntimeInitialized;
+      window.Module.onRuntimeInitialized = function(){
+        try { orig(); } catch(e){}
+        res();
       };
-
-      // Optional hooks for status & runtime (your build may call these)
-      window.Module.print = (s) => console.log('Play.js:', s);
-      window.Module.printErr = (s) => console.error('Play.js ERR:', s);
-
-      // Create script element
-      await new Promise((resolve, reject) => {
-        const s = document.createElement('script');
-        s.src = PLAYJS_JS;
-        s.onload = () => { setStatus('Play.js loaded. Initializing...'); resolve(); };
-        s.onerror = (e) => reject(new Error('Failed to load Play.js at ' + PLAYJS_JS));
-        document.body.appendChild(s);
-      });
-
-      // Wait until Module is initialized (many Emscripten builds set Module.onRuntimeInitialized)
-      if (window.Module && typeof window.Module.onRuntimeInitialized === 'function') {
-        // If the build uses onRuntimeInitialized, we can set our own wrapper
-        await new Promise(res => {
-          const orig = window.Module.onRuntimeInitialized;
-          window.Module.onRuntimeInitialized = function(){
-            try{ orig(); }catch(e){} // call original if exists
-            res();
-          };
-        });
-      } else {
-        // fallback: delay a couple seconds for initialization (not ideal)
-        await new Promise(r => setTimeout(r, 800));
-      }
-
-      setStatus('Play.js runtime initialized. Ready for dropped file.');
-      gameEl.textContent = 'Drop a PS2 image file to start the emulator.';
-    } catch (err) {
-      console.error(err);
-      setStatus('Error loading Play.js: ' + err.message, true);
-      gameEl.textContent = 'Error: Play.js failed to load. Check console and ensure Play.js/Play.wasm are present at ' + PLAYJS_BASE;
-    }
-  }
-
-  // Convert File to Uint8Array
-  function fileToUint8(f){
-    return new Promise((resolve,reject)=>{
-      const r = new FileReader();
-      r.onload = ()=> resolve(new Uint8Array(r.result));
-      r.onerror = reject;
-      r.readAsArrayBuffer(f);
+      // if module already initialized it may call immediately
     });
+  } else {
+    // fallback small delay if runtime doesn't use the hook
+    await new Promise(r => setTimeout(r, 700));
   }
 
-  // Add a dropped game file into the Emscripten FS and call the emulator bootstrap.
-  async function runDroppedGame(file){
-    try{
-      setStatus('Preparing game: ' + file.name);
-      const data = await fileToUint8(file);
+  setStatus('Play.js runtime initialized. Ready — drop an image file.');
+  gameEl.textContent = 'Runtime ready. Drop a PS2 image to begin.';
+}
 
-      if (!window.Module || !window.FS){
-        setStatus('Play runtime not ready. Try reloading page after Play.js is hosted.', true);
-        return;
-      }
+// convert file to Uint8Array
+function fileToUint8(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(new Uint8Array(reader.result));
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
 
-      // Choose a path inside the virtual FS
-      const mountPath = '/games';
-      try{ window.FS.mkdir(mountPath); } catch(e){ /* ignore if exists */ }
-      const filePath = mountPath + '/' + file.name;
+// write file into Emscripten FS & attempt to start emulator
+async function runFileInPlayJS(file){
+  try{
+    setStatus('Preparing file: ' + file.name);
+    const data = await fileToUint8(file);
 
-      // If FS API uses FS.writeFile
-      if (typeof window.FS.writeFile === 'function'){
-        window.FS.writeFile(filePath, data, { encoding: 'binary' });
-      } else if (typeof window.FS_createDataFile === 'function'){
-        // FS_createDataFile(path, name, data, canRead, canWrite)
-        window.FS_createDataFile(mountPath, file.name, data, true, true);
-      } else {
-        // As last resort, try FS.syncfs or other APIs (build-specific)
-        setStatus('FS API not found on Module — emulator build may use a different initialization API. See console for details.', true);
-        console.error('No known FS write method on Module.FS or FS_createDataFile. Module keys:', Object.keys(window.Module || {}));
-        return;
-      }
+    if (!window.FS){
+      setStatus('Play runtime FS not available. Ensure Play.js loaded correctly.', true);
+      console.error('No FS global on page — Module keys:', Object.keys(window.Module || {}));
+      return;
+    }
 
-      setStatus('Game written to virtual FS: ' + filePath);
+    // create a /media or /roms folder in FS
+    const dir = '/roms';
+    try { window.FS.mkdir(dir); } catch(e){}
+    const path = dir + '/' + file.name;
 
-      // Now attempt to call a common entry point (this depends on Play! build)
-      // Many Emscripten-based builds expose a main entry or a custom function.
-      // We'll try a few common function names — adjust if build exposes a different API.
-      const tryNames = [
-        'runGame',              // hypothetical
-        'loadGame',             // hypothetical
-        'play_load_game',       // hypothetical
-        'LoadGameFromPath',     // hypothetical
-        'main'                  // fallback to main (requires proper argc/argv)
-      ];
+    // prefer FS.writeFile if available
+    if (typeof window.FS.writeFile === 'function'){
+      window.FS.writeFile(path, data, { encoding: 'binary' });
+    } else if (typeof window.FS_createDataFile === 'function'){
+      window.FS_createDataFile(dir, file.name, data, true, true);
+    } else {
+      setStatus('No supported FS write method found on runtime. See console for details.', true);
+      console.error('FS methods:', Object.keys(window.FS || {}));
+      return;
+    }
 
-      let started = false;
-      for (const name of tryNames){
-        if (typeof window[name] === 'function'){
-          setStatus('Starting emulator via function: ' + name);
-          try{
-            // Some functions accept a path string, some expect pointer types — this is build-specific.
-            // We'll attempt calling with the FS path; if it fails, catch and continue.
-            window[name](filePath);
-            started = true;
-            break;
-          }catch(e){
-            console.warn('Tried', name, 'but failed:', e);
-          }
+    setStatus('Wrote image to virtual FS at ' + path);
+
+    // Try several common entry points (this depends on the Play.js build)
+    const candidateCalls = [
+      // common names used in some builds (may need editing)
+      { type: 'function', name: 'runGame' },
+      { type: 'function', name: 'loadGame' },
+      { type: 'function', name: 'StartGame' },
+      { type: 'function', name: 'play_load_game' },
+      { type: 'function', name: 'Play_load' },
+      // fallback: attempt Module.ccall('main', ...) — complex, may not work
+      { type: 'ccall', name: 'main' }
+    ];
+
+    let started = false;
+    for (const c of candidateCalls){
+      if (c.type === 'function' && typeof window[c.name] === 'function'){
+        try{
+          setStatus('Starting emulator via function: ' + c.name);
+          window[c.name](path); // many implementations accept a path string
+          started = true;
+          break;
+        }catch(err){
+          console.warn('Attempt to call', c.name, 'failed:', err);
+        }
+      } else if (c.type === 'ccall' && typeof window.Module.ccall === 'function'){
+        try{
+          setStatus('Calling main via Module.ccall (fallback)');
+          // This attempt likely won't work without proper argv, but we try a simple call
+          window.Module.ccall('main', 'number', ['number','number'], [0,0]);
+          started = true;
+          break;
+        }catch(err){
+          console.warn('Module.ccall(main) attempt failed:', err);
         }
       }
-
-      if (!started){
-        // Try Module.ccall as a last attempt — calling C main with argv is complex; so we notify user.
-        setStatus('Could not auto-start the emulator. Build likely exposes a different API. See console for details and provide Play.js build info so I can adapt the loader.', true);
-        console.error('Autostart failed — available globals:', Object.keys(window).filter(k=>k.toLowerCase().includes('play')||k.toLowerCase().includes('module')).slice(0,80));
-      } else {
-        gameEl.textContent = 'Game started: ' + file.name;
-      }
-
-    }catch(e){
-      console.error(e);
-      setStatus('Error preparing/starting game: ' + e.message, true);
     }
+
+    if (!started){
+      setStatus('File written but emulator did not auto-start. See console for available globals; I can adapt this loader to the exact Play.js build.', true);
+      console.log('Available globals (sample):', Object.keys(window).slice(0,200));
+      gameEl.textContent = 'Image loaded to FS: ' + path + ' — emulator did not auto-start.';
+    } else {
+      gameEl.textContent = 'Running: ' + file.name;
+    }
+
+  }catch(err){
+    console.error(err);
+    setStatus('Error loading image: ' + err.message, true);
   }
+}
 
-  // Wire up file input
-  input.addEventListener('change', e => {
-    const f = e.target.files[0];
-    if (f) runDroppedGame(f);
-  });
+// UI wiring
+input.addEventListener('change', (e) => {
+  const f = e.target.files && e.target.files[0];
+  if (f) runFileInPlayJS(f);
+});
 
-  // Also support drag/drop on the box
-  const box = document.getElementById('emu-box');
-  box.addEventListener('dragover', e => { e.preventDefault(); box.style.borderColor='#38f'; });
-  box.addEventListener('dragleave', e => { e.preventDefault(); box.style.borderColor='';});
-  box.addEventListener('drop', e => {
-    e.preventDefault();
-    box.style.borderColor='';
-    const f = e.dataTransfer.files[0];
-    if (f) runDroppedGame(f);
-  });
+// drag/drop
+const box = document.getElementById('emu-box');
+box.addEventListener('dragover', e => { e.preventDefault(); box.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#38f'; });
+box.addEventListener('dragleave', e => { e.preventDefault(); box.style.borderColor = ''; });
+box.addEventListener('drop', e => {
+  e.preventDefault();
+  box.style.borderColor = '';
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) runFileInPlayJS(f);
+});
 
-  // Start loading Play.js
-  loadPlayJS();
-  </script>
-
-  <!--
-    NOTES:
-    - This template assumes you self-hosted Play.js & Play.wasm at /static/playjs/.
-    - After you put the actual Play.js + Play.wasm files there, reload this page. If the runtime's exposed API has specific function names,
-      tell me what global functions your Play.js exposes (open browser console after loading Play.js and paste the list of globals or the Module keys),
-      and I'll update the auto-start section to call the exact API for launching a game from the virtual FS.
-  -->
+// attempt to load Play.js runtime on page load
+loadPlayJSEnv().catch(err=>{
+  console.error(err);
+  setStatus('Failed to load Play.js: ' + err.message + ' — ensure Play.js & Play.wasm are hosted at ' + PLAYJS_BASE, true);
+  gameEl.textContent = 'Play.js failed to load. Open console for details.';
+});
+</script>
 </body>
 </html>
