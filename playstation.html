@@ -1,69 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Logi-PS2 — Play!.js</title>
-<head>
-    <meta charset="UTF-8" />
-    <title>Logi-EMU — EmulatorJS</title>
-    <link rel="icon" href="static/images/logo.png" type="image/jpeg" />
-    <style>
-        :root{ --border-grad: linear-gradient(90deg, white, black) 1; --accent:#38f; }
-        html,body{height:100%;margin:0;}
-        body{
-            margin:0;
-            font-family:'Segoe UI','Helvetica Neue',sans-serif;
-            background: url('static/images/1567665.png') no-repeat center center fixed;
-            background-size: cover;
-            color:white;
-            overflow-y:scroll;
-        }
-        body::-webkit-scrollbar{ width: 8px; }
-        body::-webkit-scrollbar-track{ background: rgba(0,0,0,0.6); }
-        body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
-        body::-webkit-scrollbar-thumb:hover{ background:#888; }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PS Emulators — Logi Play</title>
+<link rel="icon" href="static/images/logo.png" type="image/png" />
+<style>
+  :root{
+    --border-grad: linear-gradient(90deg, white, black) 1;
+    --accent: #38f;
+  }
+  html,body{height:100%;margin:0;}
+  body {
+    margin:0;
+    font-family:'Segoe UI','Helvetica Neue',sans-serif;
+    background: url('static/images/1567665.png') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    -webkit-font-smoothing:antialiased;
+    text-align:center;
+  }
 
-        /* Centered title at the top */
-        header{
-            padding: 18px 20px 6px;
-            text-align:center;
-        }
-        .page-title{
-            margin:0 auto;
-            font-size:2.8em;
-            text-decoration: underline;
-            text-shadow:
-                -2px -2px 0 black,
-                 2px -2px 0 black,
-                -2px  2px 0 black,
-                 2px  2px 0 black;
-            display:inline-block;
-        }
-        .top-caption{
-            margin-top:8px;
-            color:#aaa;
-            font-size:1em;
-        }
+  body::-webkit-scrollbar{ width: 8px; }
+  body::-webkit-scrollbar-track{ background: rgba(0,0,0,0.6); }
+  body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
+  body::-webkit-scrollbar-thumb:hover{ background:#888; }
+
+  header{ padding: 18px 20px 6px; text-align:center; }
+
+  /* Title styling matches your other pages: big white text with black outline */
+  .page-title{
+    margin:0 auto;
+    font-size:3.0em;
+    color: #fff;
+    text-decoration: none;
+    text-shadow:
+      -2px -2px 0 #000,
+       2px -2px 0 #000,
+      -2px  2px 0 #000,
+       2px  2px 0 #000;
+    display:inline-block;
+  }
+
+  .top-caption{ color:#ccc; margin-top:6px; font-size:1rem; }
+
+  .center-area{
+    display:flex;
+    justify-content:center;
+    padding:28px 16px;
+  }
+
+  .button-row{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:160px;
+    padding:12px 18px;
+    font-size:1.02rem;
+    font-weight:600;
+    color: white;
+    background: rgba(0,0,0,0.65);
+    text-decoration:none;
+    cursor:pointer;
+    border:3px solid;
+    border-image: var(--border-grad);
+    border-radius:12px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+    transition: transform .12s ease, background .12s;
+  }
+  .btn:hover{ transform: translateY(-3px); background: rgba(0,0,0,0.78); }
+  .btn:active{ transform: translateY(-1px); }
+
+  .note { margin-top:18px; color:#ddd; max-width:920px; margin-left:auto; margin-right:auto; }
+  @media (max-width:720px){
+    .page-title{ font-size:2.0rem; }
+    .btn{ min-width:140px; padding:10px 14px; }
+  }
 </style>
 </head>
 <body>
-  <button onclick="openGame()">Open Emulator</button>
+  <header>
+    <h1 class="page-title">PS Emulators</h1>
+    <div class="top-caption">Choose an emulator — only use games you legally own.</div>
+  </header>
 
-  <script>
-    function openGame() {
-      var win = window.open('about:blank', '_blank', 'width=1280,height=720');
-      if (!win) {
-        alert('Popup blocked! Please allow popups for this site.');
-        return;
-      }
+  <main class="center-area" role="main" aria-labelledby="ps-emulators">
+    <nav class="button-row" aria-label="PS emulator links">
+      <!-- PS2 button (opens Play!.js in a new tab) -->
+      <a class="btn" href="https://playjs.purei.org/" target="_blank" rel="noopener noreferrer" title="Open Play!.js (PS2)">
+        Launch PS2 (Currently not working yet..)
+      </a>
 
-      var iframe = win.document.createElement('iframe');
-      iframe.style.width = '100%';
-      iframe.style.height = '100%';
-      iframe.style.border = 'none';
-      iframe.src = 'https://playjs.purei.org/';
-      win.document.body.appendChild(iframe);
-    }
-  </script>
+      <!-- PS1 button (wasmPSX demo) -->
+      <a class="btn" href="https://js-emulators.github.io/wasmpsx/?utm_source" target="_blank" rel="noopener noreferrer" title="Open wasmPSX (PS1)">
+        Play PS1 (wasmPSX)
+      </a>
+    </nav>
+  </main>
+
+  <p class="note">
+    Buttons open the emulator in a new tab. The PS2 emulator (Play!.js) may be experimental for some games — for PS1 you can use the wasmPSX demo linked above.
+  </p>
 </body>
 </html>
