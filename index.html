@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <title>Logi Play</title>
 <link rel="icon" href="static/images/logo.png" type="image/jpeg" />
+
 <style>
     :root{
         --border-grad: linear-gradient(90deg, white, black) 1;
@@ -20,15 +21,13 @@
         overflow-y: scroll;
     }
 
-    /* slim custom scrollbar */
     body::-webkit-scrollbar{ width: 8px; }
     body::-webkit-scrollbar-track{ background: rgba(0,0,0,0.6); }
     body::-webkit-scrollbar-thumb{ background: #555; border-radius:4px; }
     body::-webkit-scrollbar-thumb:hover{ background:#888; }
 
-    /* header - tightened */
     header{
-        padding: 10px 20px 6px; /* smaller top padding so content sits higher */
+        padding: 10px 20px 6px;
     }
     h1{
         margin:0;
@@ -46,14 +45,12 @@
 
     .caption{ font-size:0.98em; color:#aaa; margin-top:8px; margin-bottom:8px; }
 
-    /* center area - moved near top of page */
     .center-area{
-        /* reduce vertical space and push content up */
-        min-height: calc(100vh * 0.18); /* small vertical area near top */
+        min-height: calc(100vh * 0.18);
         display:flex;
-        align-items:flex-start; /* align near top */
+        align-items:flex-start;
         justify-content:center;
-        padding-top:10px; /* small gap below header */
+        padding-top:10px;
     }
 
     .button-row{
@@ -84,25 +81,17 @@
     .btn:hover{ transform: translateY(-3px); background: rgba(0,0,0,0.75); }
     .btn:active{ transform: translateY(-1px); }
 
-    .btn.disabled, .btn[aria-disabled="true"]{
-        opacity:0.45;
-        cursor: default;
-        transform: none;
-        pointer-events: none; /* unclickable */
-    }
-
-    /* About / features area - moved up and enlarged to fill more of the page */
     .extra{
-        margin: 12px auto 40px; /* moved up */
+        margin: 12px auto 40px;
         width:92%;
-        max-width:1200px; /* larger max width */
+        max-width:1200px;
         color:rgba(255,255,255,0.95);
         background: rgba(0,0,0,0.50);
-        padding:28px; /* increased padding */
+        padding:28px;
         border-radius:10px;
         border:1px solid rgba(255,255,255,0.06);
         box-shadow: 0 10px 36px rgba(0,0,0,0.55);
-        min-height: calc(100vh - 200px); /* fill most of remaining page */
+        min-height: calc(100vh - 200px);
         box-sizing: border-box;
     }
 
@@ -131,6 +120,7 @@
     }
 </style>
 </head>
+
 <body>
     <header>
         <h1>Logi Play <img src="static/images/logo.png" alt="logo" class="logo"></h1>
@@ -139,14 +129,15 @@
 
     <main class="center-area">
         <div class="button-row" role="navigation" aria-label="Main actions">
-            <!-- left: Games -->
-            <a class="btn" href="sites.html" title="Games">Games (Do not try)/a>
 
-            <!-- center: EmulatorJS (renamed to EmulatorJS) -->
+            <!-- GAMES — now cloaked -->
+            <a class="btn" href="#" onclick="cloakPage('sites.html')" title="Games">Games</a>
+
+            <!-- EmulatorJS -->
             <a class="btn" href="emulatorjs.html" title="EmulatorJS">EmulatorJS</a>
 
-            <!-- right: PlayStation emulator (now clickable) -->
-            <a class="btn" href="playstation.html" title="PlayStation (PS2 & 1) Emulator">
+            <!-- PlayStation -->
+            <a class="btn" href="playstation.html" title="PlayStation (PS1 & 2) Emulator">
                 PlayStation (PS1 & 2) Emulator
             </a>
         </div>
@@ -159,30 +150,44 @@
             Load legally-owned ROMs directly in your browser — no uploads, no external storage — just local playback powered by EmulatorJS and Play!.js.
         </p>
 
-        <div class="features" aria-hidden="false">
+        <div class="features">
             <div class="feature">
                 <h4>Emulator (Logi-EMU)</h4>
-                <p>Quickly load and play ROMs in the browser. Supports a broad set of cores (GBA, SNES, NES, N64, and more). Performance is optimized for modern devices.</p>
+                <p>Quickly load and play ROMs in the browser. Supports GBA, SNES, NES, N64, and more.</p>
             </div>
 
             <div class="feature">
                 <h4>Games Directory</h4>
-                <p>Planned curated directory for browser-friendly homebrew/free games. The future directory will include categories, tags, and instant play links. </p>
+                <p>Future curated directory for browser-friendly homebrew/free games.</p>
             </div>
 
             <div class="feature">
                 <h4>Privacy & Security</h4>
-                <p>ROMs remain in your browser and are not uploaded. We encourage respecting IP ownership — only use ROMs you legally own.</p>
+                <p>ROMs remain local — nothing is uploaded. Only use ROMs you legally own.</p>
             </div>
         </div>
-
-        <p style="margin-top:18px;color:#d6d6d6;">
-            Want features added or a specific game supported? Open an issue on the project repo — community suggestions help shape the roadmap.
-        </p>
     </section>
+
+<script>
+function cloakPage(url) {
+    const newTab = window.open("about:blank", "_blank");
+
+    if (!newTab) {
+        alert("Popup blocked! Allow popups for Logi Play.");
+        return;
+    }
+
+    newTab.document.write(`
+        <html>
+            <head><title>Loading...</title></head>
+            <body style="margin:0;padding:0;overflow:hidden;background:black;">
+                <iframe src="${url}" style="border:0;width:100vw;height:100vh;"></iframe>
+            </body>
+        </html>
+    `);
+    newTab.document.close();
+}
+</script>
+
 </body>
 </html>
-
-
-
-
