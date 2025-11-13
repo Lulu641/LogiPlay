@@ -1,131 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Games — Logi Play</title>
-<link rel="icon" href="static/images/logo.png" type="image/png" />
-<style>
+  <meta charset="UTF-8" />
+  <title>Games — Logi Play</title>
+  <link rel="icon" href="static/images/logo.png" type="image/png" />
+  <style>
     html,body{height:100%;margin:0;}
     body{
-        margin:0;
-        font-family:'Segoe UI','Helvetica Neue',sans-serif;
-        background: url('static/images/1567665.png') no-repeat center center fixed;
-        background-size: cover;
-        color:white;
-        overflow-y:scroll;
-        text-align:center;
+      margin:0;
+      font-family:'Segoe UI','Helvetica Neue',sans-serif;
+      background: url('static/images/1567665.png') no-repeat center center fixed;
+      background-size: cover;
+      color:white;
+      overflow-y:scroll;
     }
     body::-webkit-scrollbar{ width:8px; }
     body::-webkit-scrollbar-track{ background: rgba(0,0,0,0.6); }
     body::-webkit-scrollbar-thumb{ background:#555; border-radius:4px; }
     body::-webkit-scrollbar-thumb:hover{ background:#888; }
 
-    h1{
-        margin-top:20px;
-        font-size:3em;
-        text-decoration:underline;
-        text-shadow:
-            -2px -2px 0 black,
-             2px -2px 0 black,
-            -2px  2px 0 black,
-             2px  2px 0 black;
+    .page-title{
+      margin:18px 0 4px;
+      text-align:center;
+      font-size:3em;
+      text-decoration:underline;
+      text-shadow:
+        -2px -2px 0 black,
+         2px -2px 0 black,
+        -2px  2px 0 black,
+         2px  2px 0 black;
+    }
+    .caption{
+      text-align:center;
+      color:#ccc;
+      font-size:1rem;
+      margin-bottom:12px;
     }
 
-    .btn-row{
-        display:flex;
-        flex-wrap:wrap;
-        gap:10px;
-        justify-content:center;
-        margin:15px auto;
-        padding:10px;
-        max-width:900px;
+    .wrapper{
+      max-width:1100px;
+      margin:0 auto 40px;
+      padding:0 18px 24px;
     }
 
-    .src-btn{
-        padding:12px 18px;
-        font-size:1rem;
-        font-weight:600;
-        color:white;
-        background:rgba(0,0,0,0.65);
-        border:3px solid;
-        border-image: linear-gradient(90deg, white, black) 1;
-        border-radius:12px;
-        cursor:pointer;
-        text-decoration:none;
-        transition:.15s;
-    }
-    .src-btn:hover{
-        background:rgba(0,0,0,0.78);
-        transform:translateY(-3px);
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));
+      gap:16px;
+      margin-top:10px;
     }
 
-    #frame-box{
-        width:92%;
-        height:75vh;
-        margin:20px auto;
-        background:rgba(0,0,0,0.45);
-        border:1px solid rgba(255,255,255,0.12);
-        border-radius:10px;
-        backdrop-filter:blur(4px);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        padding:6px;
+    .card{
+      background:rgba(0,0,0,0.55);
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.10);
+      box-shadow:0 10px 30px rgba(0,0,0,0.60);
+      padding:16px 16px 14px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height:140px;
     }
 
-    #gameframe{
-        width:100%;
-        height:100%;
-        border:0;
-        border-radius:8px;
-        background:black;
+    .card h3{
+      margin:0 0 6px;
+      font-size:1.25rem;
+      text-shadow:
+        -1px -1px 0 black,
+         1px -1px 0 black,
+        -1px  1px 0 black,
+         1px  1px 0 black;
+    }
+    .card p{
+      margin:0 0 10px;
+      color:#e4e4e4;
+      font-size:0.95rem;
+      line-height:1.4;
     }
 
-    #error-msg{
-        color:#ff8080;
-        font-size:1.05rem;
-        display:none;
-        padding:12px;
+    .btn{
+      display:inline-block;
+      padding:9px 13px;
+      font-size:0.98rem;
+      font-weight:600;
+      color:white;
+      background:rgba(0,0,0,0.65);
+      border:3px solid;
+      border-image: linear-gradient(90deg, white, black) 1;
+      border-radius:10px;
+      text-decoration:none;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease;
+      text-align:center;
     }
-</style>
+    .btn:hover{
+      background:rgba(0,0,0,0.80);
+      transform:translateY(-2px);
+    }
+
+    .note{
+      margin-top:18px;
+      background:rgba(0,0,0,0.55);
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.10);
+      padding:14px;
+      font-size:0.95rem;
+      color:#ddd;
+    }
+
+    .back-link{
+      margin-top:14px;
+      text-align:center;
+    }
+    @media (max-width:700px){
+      .page-title{ font-size:2.2em; }
+    }
+  </style>
 </head>
 <body>
+  <h1 class="page-title">Games</h1>
+  <div class="caption">
+    Launch hubs in new tabs. If one ever goes down or gets blocked, come back here — Logi Play is the stable starting point.
+  </div>
 
-<h1>Games Hub</h1>
+  <div class="wrapper">
+    <section class="grid" aria-label="Game hubs">
+      <article class="card">
+        <h3>CloudMoon (Web App)</h3>
+        <p>Main CloudMoon game hub. If your network allows it, this opens the full web app in a new tab.</p>
+        <a class="btn" href="https://web.cloudmoonapp.com/" target="_blank" rel="noopener noreferrer">
+          Open CloudMoon
+        </a>
+      </article>
 
-<div class="btn-row">
-    <button class="src-btn" onclick="loadSrc('https://web.cloudmoonapp.com/')">CloudMoon</button>
-    <button class="src-btn" onclick="loadSrc('https://nb-ga.github.io/games-site/')">GPlus Mirror</button>
-    <button class="src-btn" onclick="loadSrc('https://ghgames.netlify.app/games')">Netlify Games</button>
-    <button class="src-btn" onclick="loadSrc('https://jhlee12.github.io/gba/')">GBA Hub</button>
-    <button class="src-btn" onclick="loadSrc('https://99-classroom.github.io/Unblocked-Games-g-plus/')">Gplus Hub</button>
-    <a class="src-btn" href="index.html">⟵ Back</a>
-</div>
+      <article class="card">
+        <h3>GPlus / Games Site</h3>
+        <p>Alternate hub hosted on GitHub Pages. Good backup when other sites are blocked.</p>
+        <a class="btn" href="https://nb-ga.github.io/games-site/" target="_blank" rel="noopener noreferrer">
+          Open GPlus Mirror
+        </a>
+      </article>
 
-<div id="frame-box">
-    <iframe id="gameframe"></iframe>
-</div>
+      <article class="card">
+        <h3>Netlify GH Games</h3>
+        <p>Another collection of browser games. If it’s blocked, just try one of the other hubs.</p>
+        <a class="btn" href="https://ghgames.netlify.app/games" target="_blank" rel="noopener noreferrer">
+          Open Netlify Hub
+        </a>
+      </article>
 
-<p id="error-msg">⚠ This site blocks iframes (X-Frame-Options / CSP). Try a different source or use a GitHub mirror.</p>
+      <article class="card">
+        <h3>GBA / Nintendo-Style Hub</h3>
+        <p>Retro-style HTML5 game collection. Despite the name, it’s not an official Nintendo site.</p>
+        <a class="btn" href="https://jhlee12.github.io/gba/" target="_blank" rel="noopener noreferrer">
+          Open GBA Hub
+        </a>
+      </article>
 
-<script>
-function loadSrc(url){
-    let frame = document.getElementById("gameframe");
-    let error = document.getElementById("error-msg");
+      <article class="card">
+        <h3>UBG100 Collection</h3>
+        <p>Large list of games on GitHub Pages. Great fallback if other hubs have issues.</p>
+        <a class="btn" href="https://ubg100.github.io/games.html" target="_blank" rel="noopener noreferrer">
+          Open UBG100
+        </a>
+      </article>
 
-    error.style.display = "none";
-    frame.src = url;
+      <article class="card">
+        <h3>EmulatorJS (Logi-EMU)</h3>
+        <p>Use your own ROMs with your local EmulatorJS loader. Stays fully in-browser.</p>
+        <a class="btn" href="emulatorjs.html">
+          Open Logi-EMU
+        </a>
+      </article>
 
-    // Detect iframe blocking
-    setTimeout(()=>{
-        try {
-            let test = frame.contentWindow.location.href;
-        } catch(e){
-            error.style.display = "block";
-        }
-    }, 2000);
-}
-</script>
+      <article class="card">
+        <h3>PlayStation Emulators</h3>
+        <p>Links out to PS1/PS2 emulators (wasmPSX, Play!.js). Only use games you own.</p>
+        <a class="btn" href="playstation.html">
+          Open PS Emu Page
+        </a>
+      </article>
+    </section>
 
+    <div class="note">
+      <strong>Note:</strong> Some school networks will block certain external domains. That’s not Logi Play being broken — 
+      the hub is here so you always have a single, verified starting place. If one link dies, just try another.
+    </div>
+
+    <div class="back-link">
+      <a class="btn" href="index.html">⟵ Back to Home</a>
+    </div>
+  </div>
 </body>
 </html>
