@@ -24,38 +24,11 @@
     <div class="grid">
       <div class="card">
         <h3>Site 1</h3>
-        <p>Opens in a cloaked tab — looks like Google Classroom.</p>
-        <a href="javascript:void(0)" onclick="openCloakedTab()" class="btn">Open Site 1</a>
+        <p>Opens your Google Site directly.</p>
+        <!-- JUST A NORMAL LINK -->
+        <a href="https://sites.google.com/classroom.center/view/your-site-here" target="_blank" class="btn">Open Site 1</a>
       </div>
     </div>
   </div>
-
-  <script>
-    function openCloakedTab() {
-      const realUrl = "https://sites.google.com/classroom.center/view/your-site-here"; // CHANGE THIS
-
-      const win = window.open("", "_blank", "width=1200,height=800");
-
-      if (!win) {
-        alert("Popup blocked! Allow popups for this site.");
-        return;
-      }
-
-      win.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>Google Classroom</title>
-          <link rel="icon" href="https://classroom.google.com/favicon.ico" type="image/x-icon">
-          <style>
-            body, html { margin:0; padding:0; width:100%; height:100%; overflow:hidden; 
-          </style>
-        </head>
-        </html>
-      `);
-      win.document.close();
-    }
-  </script>
 </body>
 </html>
