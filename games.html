@@ -19,10 +19,10 @@
     body::-webkit-scrollbar-thumb{ background:#555; border-radius:4px; }
     body::-webkit-scrollbar-thumb:hover{ background:#888; }
 
-    .page-title{
-      margin:18px 0 4px;
-      text-align:center;
+    h1{
+      margin-top:18px;
       font-size:3em;
+      text-align:center;
       text-decoration:underline;
       text-shadow:
         -2px -2px 0 black,
@@ -30,166 +30,105 @@
         -2px  2px 0 black,
          2px  2px 0 black;
     }
-    .caption{
-      text-align:center;
-      color:#ccc;
-      font-size:1rem;
-      margin-bottom:12px;
-    }
 
     .wrapper{
       max-width:1100px;
-      margin:0 auto 40px;
-      padding:0 18px 24px;
+      margin:0 auto;
+      padding:0 20px 40px;
     }
 
     .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
       gap:16px;
-      margin-top:10px;
+      margin-top:20px;
     }
 
     .card{
       background:rgba(0,0,0,0.55);
+      border:1px solid rgba(255,255,255,0.1);
       border-radius:10px;
-      border:1px solid rgba(255,255,255,0.10);
-      box-shadow:0 10px 30px rgba(0,0,0,0.60);
-      padding:16px 16px 14px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      min-height:140px;
+      padding:16px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.6);
     }
 
     .card h3{
-      margin:0 0 6px;
-      font-size:1.25rem;
+      margin:0 0 8px;
+      font-size:1.2rem;
       text-shadow:
         -1px -1px 0 black,
          1px -1px 0 black,
         -1px  1px 0 black,
          1px  1px 0 black;
     }
+
     .card p{
-      margin:0 0 10px;
-      color:#e4e4e4;
+      margin:0 0 12px;
+      color:#ddd;
       font-size:0.95rem;
-      line-height:1.4;
     }
 
     .btn{
       display:inline-block;
-      padding:9px 13px;
-      font-size:0.98rem;
-      font-weight:600;
-      color:white;
+      padding:9px 14px;
       background:rgba(0,0,0,0.65);
-      border:3px solid;
-      border-image: linear-gradient(90deg, white, black) 1;
-      border-radius:10px;
+      color:white;
       text-decoration:none;
-      cursor:pointer;
-      transition:transform .12s ease, background .12s ease;
-      text-align:center;
-    }
-    .btn:hover{
-      background:rgba(0,0,0,0.80);
-      transform:translateY(-2px);
-    }
-
-    .note{
-      margin-top:18px;
-      background:rgba(0,0,0,0.55);
+      font-weight:600;
       border-radius:10px;
-      border:1px solid rgba(255,255,255,0.10);
-      padding:14px;
-      font-size:0.95rem;
-      color:#ddd;
+      border:3px solid;
+      border-image:linear-gradient(90deg,white,black) 1;
+      transition:.12s;
     }
+    .btn:hover{ background:rgba(0,0,0,0.8); transform:translateY(-2px); }
 
-    .back-link{
-      margin-top:14px;
+    .back{
+      margin-top:20px;
       text-align:center;
-    }
-    @media (max-width:700px){
-      .page-title{ font-size:2.2em; }
     }
   </style>
 </head>
 <body>
-  <h1 class="page-title">Games</h1>
-  <div class="caption">
-    Launch hubs in new tabs. If one ever goes down or gets blocked, come back here — Logi Play is the stable starting point.
-  </div>
 
-  <div class="wrapper">
-    <section class="grid" aria-label="Game hubs">
-      <article class="card">
-        <h3>CloudMoon (Web App)</h3>
-        <p>Main CloudMoon game hub. If your network allows it, this opens the full web app in a new tab.</p>
-        <a class="btn" href="https://web.cloudmoonapp.com/" target="_blank" rel="noopener noreferrer">
-          Open CloudMoon
-        </a>
-      </article>
+<h1>Games</h1>
 
-      <article class="card">
-        <h3>GPlus / Games Site</h3>
-        <p>Alternate hub hosted on GitHub Pages. Good backup when other sites are blocked.</p>
-        <a class="btn" href="https://nb-ga.github.io/games-site/" target="_blank" rel="noopener noreferrer">
-          Open GPlus Mirror
-        </a>
-      </article>
+<div class="wrapper">
+  <div class="grid">
 
-      <article class="card">
-        <h3>Netlify GH Games</h3>
-        <p>Another collection of browser games. If it’s blocked, just try one of the other hubs.</p>
-        <a class="btn" href="https://ghgames.netlify.app/games" target="_blank" rel="noopener noreferrer">
-          Open Netlify Hub
-        </a>
-      </article>
-
-      <article class="card">
-        <h3>GBA / Nintendo-Style Hub</h3>
-        <p>Retro-style HTML5 game collection. Despite the name, it’s not an official Nintendo site.</p>
-        <a class="btn" href="https://jhlee12.github.io/gba/" target="_blank" rel="noopener noreferrer">
-          Open GBA Hub
-        </a>
-      </article>
-
-      <article class="card">
-        <h3>UBG100 Collection</h3>
-        <p>Large list of games on GitHub Pages. Great fallback if other hubs have issues.</p>
-        <a class="btn" href="https://ubg100.github.io/games.html" target="_blank" rel="noopener noreferrer">
-          Open UBG100
-        </a>
-      </article>
-
-      <article class="card">
-        <h3>EmulatorJS (Logi-EMU)</h3>
-        <p>Use your own ROMs with your local EmulatorJS loader. Stays fully in-browser.</p>
-        <a class="btn" href="emulatorjs.html">
-          Open Logi-EMU
-        </a>
-      </article>
-
-      <article class="card">
-        <h3>PlayStation Emulators</h3>
-        <p>Links out to PS1/PS2 emulators (wasmPSX, Play!.js). Only use games you own.</p>
-        <a class="btn" href="playstation.html">
-          Open PS Emu Page
-        </a>
-      </article>
-    </section>
-
-    <div class="note">
-      <strong>Note:</strong> Some school networks will block certain external domains. That’s not Logi Play being broken — 
-      the hub is here so you always have a single, verified starting place. If one link dies, just try another.
+    <!-- CARD 1 -->
+    <div class="card">
+      <h3>NB Games</h3>
+      <p>Your description here.</p>
+      <a class="btn" href="https://nb-ga.github.io/games-site/" target="_blank">Open NB Games</a>
     </div>
 
-    <div class="back-link">
-      <a class="btn" href="index.html">⟵ Back to Home</a>
+    <!-- CARD 2 -->
+    <div class="card">
+      <h3>Site 2</h3>
+      <p>Type whatever you want here.</p>
+      <a class="btn" href="#" target="_blank">Open</a>
     </div>
+
+    <!-- CARD 3 -->
+    <div class="card">
+      <h3>Site 3</h3>
+      <p>Edit title + link yourself.</p>
+      <a class="btn" href="#" target="_blank">Open</a>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="card">
+      <h3>More Sites</h3>
+      <p>Add as many cards as you want.</p>
+      <a class="btn" href="#" target="_blank">Open</a>
+    </div>
+
   </div>
+
+  <div class="back">
+    <a class="btn" href="index.html">⟵ Back</a>
+  </div>
+</div>
+
 </body>
 </html>
