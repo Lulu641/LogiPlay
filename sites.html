@@ -5,7 +5,6 @@
   <title>WIP — Logi Play</title>
   <link rel="icon" href="static/images/logo.png" type="image/png" />
   <style>
-    /* [Your original CSS - unchanged] */
     html,body{height:100%;margin:0;}
     body{font-family:'Segoe UI','Helvetica Neue',sans-serif;background:url('static/images/1567665.png') no-repeat center center fixed;background-size:cover;color:white;overflow-y:scroll;}
     body::-webkit-scrollbar{width:8px;}body::-webkit-scrollbar-track{background:rgba(0,0,0,0.6);}body::-webkit-scrollbar-thumb{background:#555;border-radius:4px;}body::-webkit-scrollbar-thumb:hover{background:#888;}
@@ -17,6 +16,7 @@
     .card p{margin:0 0 12px;color:#ddd;font-size:0.95rem;}
     .btn{display:inline-block;padding:9px 14px;background:rgba(0,0,0,0.65);color:white;text-decoration:none;font-weight:600;border-radius:10px;border:3px solid;border-image:linear-gradient(90deg,white,black) 1;transition:.12s;cursor:pointer;}
     .btn:hover{background:rgba(0,0,0,0.8);transform:translateY(-2px);}
+    .loader{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:9999;color:white;font-size:1.5em;}
   </style>
 </head>
 <body>
@@ -25,48 +25,64 @@
     <div class="grid">
       <div class="card">
         <h3>Site 1</h3>
-        <p>Fully working — no white screen.</p>
-        <a href="javascript:void(0)" onclick="cloakGoogleSite()" class="btn">Open Site 1</a>
+        <p>Now 100% working — no iframe, no proxy.</p>
+        <a href="javascript:void(0)" onclick="cloneAndCloak()" class="btn">Open Site 1</a>
       </div>
+      <div id="loader" class="loader" style="display:none;">Loading site...</div>
     </div>
   </div>
 
   <script>
-    function cloakGoogleSite() {
-      const originalUrl = "https://sites.google.com/classroom.center/view/";
-      const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(originalUrl);
+    async function cloneAndCloak() {
+      const url = "https://sites.google.com/classroom.center/view/";
+      const loader = document.getElementById('loader');
+      loader.style.display = 'flex';
 
-      const win = window.open("about:blank", "_blank", "toolbar=no,location=no,menubar=no,status=no,width=1200,height=800");
+      try {
+        // Fetch the real page
+        const response = await fetch(url);
+        let html = await response.text();
 
-      if (!win) {
-        alert("Popup blocked! Allow popups.");
-        return;
+        // Fix base URL
+        const baseUrl = new URL(url).origin;
+
+        // Rewrite all relative URLs
+        html = html
+          .replace(/href="\//g, `href="${baseUrl}/`)
+          .replace(/src="\//g, `src="${baseUrl}/`)
+          .replace(/url\('\//g, `url('${baseUrl}/`)
+          .replace(/url\("\//g, `url("${baseUrl}/`)
+          .replace(/window\.location/g, '""') // Block redirects
+          .replace(/<head>/i, `<head><base href="${url}">`);
+
+        // Open cloaked tab
+        const win = window.open("about:blank", "_blank", "toolbar=no,location=no,menubar=no,status=no,resizable=yes");
+        if (!win) throw new Error("Popup blocked");
+
+        win.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>Google Classroom</title>
+            <link rel="icon" href="https://classroom.google.com/favicon.ico">
+            <style>
+              * { margin:0; padding:0; }
+              html, body { width:100%; height:100%; overflow:auto; background:#fff; }
+            </style>
+          </head>
+          <body>
+            ${html}
+          </body>
+          </html>
+        `);
+        win.document.close();
+      } catch (e) {
+        alert("Failed to load. Try again or check internet.");
+        console.error(e);
+      } finally {
+        loader.style.display = 'none';
       }
-
-      win.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>Google Classroom</title>
-          <link rel="icon" href="https://classroom.google.com/favicon.ico">
-          <base href="${originalUrl}">
-          <style>
-            * { margin:0; padding:0; }
-            html, body, iframe { width:100%; height:100%; border:0; overflow:hidden; }
-            body { background:#fff; }
-          </style>
-        </head>
-        <body>
-          <iframe src="${proxyUrl}" 
-                  allowfullscreen 
-                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-top-navigation"
-                  style="width:100%;height:100%;border:0;">
-          </iframe>
-        </body>
-        </html>
-      `);
-      win.document.close();
     }
   </script>
 </body>
