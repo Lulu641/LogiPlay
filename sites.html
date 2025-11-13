@@ -5,7 +5,6 @@
   <title>WIP — Logi Play</title>
   <link rel="icon" href="static/images/logo.png" type="image/png" />
   <style>
-    /* Your original CSS - unchanged */
     html,body{height:100%;margin:0;}
     body{font-family:'Segoe UI','Helvetica Neue',sans-serif;background:url('static/images/1567665.png') no-repeat center center fixed;background-size:cover;color:white;overflow-y:scroll;}
     body::-webkit-scrollbar{width:8px;}body::-webkit-scrollbar-track{background:rgba(0,0,0,0.6);}body::-webkit-scrollbar-thumb{background:#555;border-radius:4px;}body::-webkit-scrollbar-thumb:hover{background:#888;}
@@ -31,67 +30,73 @@
     </div>
   </div>
 
-  <!-- Ultraviolet Proxy Scripts -->
-  <script src="https://unpkg.com/@titaniumnetwork-dev/ultraviolet@2.0.0/dist/uv.bundle.js"></script>
-  <script src="https://unpkg.com/@titaniumnetwork-dev/ultraviolet@2.0.0/dist/uv.config.js"></script>
+  <!-- ==== CDN UV (no local files needed) ==== -->
+  <script src="https://cdn.jsdelivr.net/gh/titaniumnetwork-dev/Ultraviolet@2.0.0/dist/uv.bundle.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/titaniumnetwork-dev/Ultraviolet@2.0.0/dist/uv.config.js"></script>
 
   <script>
-    function openCloakedSite() {
-      const targetUrl = "https://sites.google.com/classroom.center/view/your-site-here"; // CHANGE THIS
-      const encodedUrl = Ultraviolet.codec.xor.encode(targetUrl);
-
-      const win = window.open("about:blank", "_blank", "width=1200,height=800,toolbar=no,menubar=no,location=no");
-      if (!win) {
-        alert("Popup blocked! Allow popups for this site.");
-        return;
-      }
-
-      win.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>Google Classroom</title>
-          <link rel="icon" href="https://classroom.google.com/favicon.ico" type="image/x-icon">
-          <style>
-            * { margin:0; padding:0; box-sizing:border-box; }
-            html, body, #uv-iframe { width:100%; height:100%; border:0; overflow:hidden; }
-            body { background:#fff; font-family: Roboto, sans-serif; }
-            .loading { 
-              position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-              background: #fff; display: flex; align-items: center; justify-content: center;
-              font-size: 1.2em; color: #555; z-index: 9999; flex-direction: column;
-            }
-            .loading::after {
-              content: ''; width: 40px; height: 40px; border: 5px solid #f3f3f3; 
-              border-top: 5px solid #1a73e8; border-radius: 50%; animation: spin 1s linear infinite; margin-top: 20px;
-            }
-            @keyframes spin { to { transform: rotate(360deg); } }
-          </style>
-        </head>
-        <body>
-          <div class="loading">Loading Google Classroom...</div>
-          <iframe id="uv-iframe" src="/uv/service/${encodedUrl}" 
-                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-top-navigation allow-downloads"
-                  style="display:none; width:100%; height:100%; border:none;">
-          </iframe>
-          <script>
-            const iframe = document.getElementById('uv-iframe');
-            const loading = document.querySelector('.loading');
-            iframe.onload = () => { loading.style.display = 'none'; iframe.style.display = 'block'; };
-            setTimeout(() => { if (loading) loading.style.opacity = '0.7'; }, 3000);
-          </script>
-        </body>
-        </html>
-      `);
-      win.document.close();
+    // ---- OPTIONAL LOCAL SW (delete if you don't have uv/sw.js) ----
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('https://cdn.jsdelivr.net/gh/titaniumnetwork-dev/Ultraviolet@2.0.0/static/sw.js')
+        .catch(() => {});
     }
 
-    // Register service worker for Ultraviolet
+    function openCloakedSite() {
+      const targetUrl = "https://sites.google.com/classroom.center/view/your-site-here"; // <<< CHANGE THIS
+      const encoded = Ultraviolet.codec.xor.encode(targetUrl);
+
+      const win = window.open("about:blank", "_blank",
+        "width=1200,height=800,toolbar=no,menubar=no,location=no");
+      if (!win) { alert("Popup blocked – allow pop-ups."); return; }
+
+      win.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Google Classroom</title>
+  <link rel="icon" href="https://classroom.google.com/favicon.ico">
+  <!-- CDN UV inside the popup -->
+  <script src="https://cdn.jsdelivr.net/gh/titaniumnetwork-dev/Ultraviolet@2.0.0/dist/uv.bundle.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/titaniumnetwork-dev/Ultraviolet@2.0.0/dist/uv.config.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body,iframe{width:100%;height:100%;border:0;overflow:hidden;}
+    body{background:#fff;font-family:Roboto,sans-serif;}
+    .loading{
+      position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;color:#555;font-size:1.2em;
+    }
+    .loading::after{
+      content:'';width:40px;height:40px;margin-top:20px;
+      border:5px solid #f3f3f3;border-top:5px solid #1a73e8;border-radius:50%;
+      animation:s 1s linear infinite;
+    }
+    @keyframes s{to{transform:rotate(360deg);}}
+  </style>
+</head>
+<body>
+  <div class="loading">Loading Google Classroom…</div>
+  <iframe src="https://cdn.jsdelivr.net/gh/titaniumnetwork-dev/Ultraviolet@2.0.0/service/${encoded}"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-top-navigation allow-downloads"
+          style="display:none;"></iframe>
+
+  <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/uv/sw.js').catch(() => {});
-      });
+      navigator.serviceWorker.register('https://cdn.jsdelivr.net/gh/titaniumnetwork-dev/Ultraviolet@2.0.0/static/sw.js')
+        .catch(()=>{});
+    }
+    const iframe = document.querySelector('iframe');
+    const loading = document.querySelector('.loading');
+    iframe.onload = () => {
+      loading.style.display = 'none';
+      iframe.style.display = 'block';
+    };
+  </script>
+</body>
+</html>
+      `);
+      win.document.close();
     }
   </script>
 </body>
