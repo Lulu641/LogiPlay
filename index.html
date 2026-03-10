@@ -58,6 +58,7 @@
         gap:16px;
         align-items:center;
         justify-content:center;
+        flex-wrap:wrap;
     }
 
     .btn {
@@ -103,8 +104,8 @@
         margin-top:16px;
     }
     .feature{
-        flex:1 1 30%;
-        min-width:240px;
+        flex:1 1 22%;
+        min-width:200px;
         background: rgba(255,255,255,0.03);
         padding:18px;
         border-radius:8px;
@@ -117,6 +118,7 @@
         .features{ flex-direction:column; gap:12px;}
         .center-area{ min-height: auto; padding:18px 0; }
         .extra{ min-height: auto; padding:20px; }
+        .button-row{ gap:10px; }
     }
 </style>
 </head>
@@ -130,15 +132,20 @@
     <main class="center-area">
         <div class="button-row" role="navigation" aria-label="Main actions">
 
-            <!-- GAMES — now cloaked -->
+            <!-- GAMES — cloaked -->
             <a class="btn" href="#" onclick="cloakPage('sites.html')" title="Games">Games</a>
 
-            <!-- EmulatorJS -->
+            <!-- EmulatorJS (GBA, SNES, NES, N64, etc.) -->
             <a class="btn" href="emulatorjs.html" title="EmulatorJS">EmulatorJS</a>
+
+            <!-- Nintendo DS — dedicated page -->
+            <a class="btn" href="ds.html" title="Nintendo DS Emulator">
+                Nintendo DS
+            </a>
 
             <!-- PlayStation -->
             <a class="btn" href="playstation.html" title="PlayStation (PS1 & 2) Emulator">
-                PlayStation (PS1 & 2) Emulator
+                PlayStation (PS1 &amp; 2)
             </a>
         </div>
     </main>
@@ -152,8 +159,13 @@
 
         <div class="features">
             <div class="feature">
-                <h4>Emulator (Logi-EMU)</h4>
+                <h4>Logi-EMU</h4>
                 <p>Quickly load and play ROMs in the browser. Supports GBA, SNES, NES, N64, and more.</p>
+            </div>
+
+            <div class="feature">
+                <h4>Nintendo DS</h4>
+                <p>Dedicated DS page using the melonDS core. Drop any .nds ROM and play — dual screens, touch input supported.</p>
             </div>
 
             <div class="feature">
@@ -162,7 +174,7 @@
             </div>
 
             <div class="feature">
-                <h4>Privacy & Security</h4>
+                <h4>Privacy &amp; Security</h4>
                 <p>ROMs remain local — nothing is uploaded. Only use ROMs you legally own.</p>
             </div>
         </div>
