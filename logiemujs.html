@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Logi-JS</title>
+    <title>Logi-DS/EmuJS</title>
     <link rel="icon" href="static/images/logo.png" type="image/png" />
     <style>
         :root {
@@ -83,6 +83,10 @@
             border-image: var(--border-grad);
         }
 
+        #game:-webkit-full-screen { border: none; }
+        #game:-moz-full-screen    { border: none; }
+        #game:fullscreen          { border: none; }
+
         .caption-legal {
             font-size: 1em;
             color: #aaa;
@@ -119,7 +123,7 @@
 </head>
 <body>
     <header>
-        <h1 class="page-title">Logi-JS</h1>
+        <h1 class="page-title">Logi-DS/EmuJS</h1>
         <div class="top-caption">
             Only use ROMs you own. Powered by <a href="https://emulatorjs.org/" target="_blank">EmulatorJS</a>.
         </div>
