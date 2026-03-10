@@ -45,7 +45,7 @@
         /* container moved up (raised) */
         .container{
             max-width:1200px;
-            margin: 80px auto 40px; /* raised: less top margin */
+            margin: 80px auto 40px;
             padding: 0 20px;
         }
 
@@ -117,12 +117,18 @@
             const name = parts.join(".");
 
             const coreMap = {
-                gba: "gba", gb: "gb", gbc: "gb",
-                nes: "nes", smc: "snes", sfc: "snes", fig: "snes",
-                n64: "n64", z64: "n64", nds: "nds",
-                bin: "gen", gen: "gen", sega: "gen"
+                gb:  "gambatte", gbc: "gambatte",
+                gba: "mgba",
+                nes: "fceumm",
+                smc: "snes9x", sfc: "snes9x", fig: "snes9x",
+                n64: "mupen64plus_next", z64: "mupen64plus_next", v64: "mupen64plus_next",
+                bin: "pcsx_rearmed", cue: "pcsx_rearmed",
+                iso: "ppsspp", cso: "ppsspp",
+                gen: "genesis_plus_gx", md: "genesis_plus_gx", smd: "genesis_plus_gx",
+                sms: "genesis_plus_gx", gg: "genesis_plus_gx"
             };
-            const core = coreMap[ext] || "gba";
+            const core = coreMap[ext] || "mgba";
+            const needsThreads = (ext === "iso" || ext === "cso");
 
             console.log("File selected:", fileName, "core:", core);
 
@@ -141,7 +147,7 @@
                 window.EJS_core = core;
                 window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
                 window.EJS_startOnLoaded = true;
-                window.EJS_threads = (core === "nds" || core === "psp");
+                window.EJS_threads = needsThreads && (typeof SharedArrayBuffer !== "undefined");
             };
             reader.readAsArrayBuffer(romFile);
         });
