@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Logi-DS — Nintendo DS Emulator</title>
+    <link rel="icon" href="static/images/logo.png" type="image/png" />
+    <style>
+        :root {
+            --border-grad: linear-gradient(90deg, white, black) 1;
+            --accent: #38f;
+        }
+        html, body { height: 100%; margin: 0; }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: url('static/images/1567665.png') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            overflow-y: scroll;
+        }
+        body::-webkit-scrollbar { width: 8px; }
+        body::-webkit-scrollbar-track { background: rgba(0,0,0,0.6); }
+        body::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+        body::-webkit-scrollbar-thumb:hover { background: #888; }
+
+        header {
+            padding: 18px 20px 6px;
+            text-align: center;
+        }
+        .page-title {
+            margin: 0 auto;
+            font-size: 2.8em;
+            text-decoration: underline;
+            text-shadow:
+                -2px -2px 0 black,
+                 2px -2px 0 black,
+                -2px  2px 0 black,
+                 2px  2px 0 black;
+            display: inline-block;
+        }
+        .top-caption {
+            margin-top: 8px;
+            color: #aaa;
+            font-size: 1em;
+        }
+        .top-caption a { color: var(--accent); text-decoration: none; }
+
+        /* Warning banner */
+        .warning-banner {
+            margin: 10px auto 0;
+            max-width: 680px;
+            background: rgba(255, 180, 0, 0.12);
+            border: 1px solid rgba(255, 180, 0, 0.45);
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: #ffd966;
+            font-size: 0.95em;
+            text-align: center;
+        }
+        .warning-banner strong { color: #ffcc00; }
+
+        .container {
+            max-width: 1200px;
+            margin: 24px auto 40px;
+            padding: 0 20px;
+        }
+
+        /* Core selector */
+        .core-selector {
+            margin: 0 auto 14px;
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .core-selector label {
+            color: #ccc;
+            font-size: 0.95em;
+        }
+        .core-selector select {
+            background: #222;
+            color: white;
+            border: 2px solid #555;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 0.95em;
+            cursor: pointer;
+            outline: none;
+        }
+        .core-selector select:focus { border-color: var(--accent); }
+
+        /* ROM drop box */
+        #emu-box {
+            margin: 0 auto 16px;
+            padding: 20px;
+            width: 90%;
+            max-width: 600px;
+            border: 3px dashed #ccc;
+            border-radius: 10px;
+            background-color: #222;
+            position: relative;
+            cursor: pointer;
+            text-align: center;
+        }
+        #emu-box:hover { border-color: var(--accent); background-color: #333; }
+        #input {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Dual-screen DS layout */
+        #game {
+            margin: 18px auto 0;
+            width: 60%;
+            max-width: 920px;
+            /* DS has dual screens — EmulatorJS stacks them vertically, so taller height */
+            height: 560px;
+            background: black;
+            border: 3px solid;
+            border-image: var(--border-grad);
+        }
+
+        .caption-legal {
+            font-size: 1em;
+            color: #aaa;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .info {
+            margin: 24px auto;
+            width: 75%;
+            color: rgba(255,255,255,0.95);
+            background: rgba(0,0,0,0.45);
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            font-size: 0.97em;
+            line-height: 1.55;
+        }
+        .info strong { color: #fff; }
+        .info ul {
+            margin: 8px 0 0 0;
+            padding-left: 20px;
+            color: #ddd;
+        }
+        .info ul li { margin-bottom: 4px; }
+
+        .back-link {
+            display: inline-block;
+            margin: 12px 0 0 0;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        @media (max-width: 720px) {
+            #game { width: 98%; height: 420px; }
+            .info { width: 92%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="page-title">Logi-DS (Nintendo DS)</h1>
+        <div class="top-caption">
+            Only use ROMs that you legally own. Powered by <a href="https://emulatorjs.org/" target="_blank">EmulatorJS</a> (melonDS / DeSmuME cores).
+        </div>
+        <div class="warning-banner">
+            <strong>Note:</strong> NDS emulation in the browser is experimental and may run slower than other systems.
+            DS support does <strong>not</strong> work reliably on the standard EmulatorJS page. This dedicated page uses the
+            <strong>melonDS</strong> core for the best compatibility available in-browser.
+        </div>
+    </header>
+
+    <div class="container">
+        <p class="caption-legal">
+            Drop a legally-owned <strong>.nds</strong> ROM below and the emulator runs locally in your browser. Nothing is uploaded.
+        </p>
+
+        <div class="core-selector">
+            <label for="core-select">Core:</label>
+            <select id="core-select">
+                <option value="melonds" selected>melonDS (recommended)</option>
+                <option value="desmume">DeSmuME (older, try if melonDS fails)</option>
+                <option value="desmume2015">DeSmuME 2015 (legacy fallback)</option>
+            </select>
+        </div>
+
+        <div id="emu-box">
+            <input type="file" id="input" accept=".nds,.zip">
+            Drag your <strong>.nds</strong> ROM here, or click to browse
+        </div>
+
+        <div id="game"></div>
+
+        <div class="info">
+            <strong>Tips for Nintendo DS emulation in the browser:</strong>
+            <ul>
+                <li>I recommend using a browser like chrome, edge to run it.</li>
+                <li>It could also end up not working like EmulatorJS so no promises, but this is dedicated for it.</li>
+                <li>Some games may run slowly DS emulation in-browser.</li>
+                <li>Touch screen input maps to mouse clicks on the bottom (lower) screen area.</li>
+                <li>Use the emulator's built-in menu to configure controls, save states, and screen layout.</li>
+                <li>ROM data stays entirely in your browser; nothing is sent to any server.</li>
+            </ul>
+            <br>
+            <strong>Why not melonDS directly?</strong> The official melonDS is a desktop C++ app with no public web demo yet (a WASM port is in progress by the community but not officially released). This page uses EmulatorJS's melonDS core, which is the best browser-based option currently available.
+        </div>
+
+        <div style="text-align:center;">
+            <a class="back-link" href="index.html">← Back to Logi Play</a>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById("input");
+        let emuLoaded = false;
+
+        input.addEventListener("change", () => {
+            const romFile = input.files[0];
+            if (!romFile) return;
+
+            const selectedCore = document.getElementById("core-select").value;
+
+            // If emulator was already loaded, reload the page cleanly
+            // (EmulatorJS doesn't support re-init without full page reload)
+            if (emuLoaded) {
+                const confirmReload = confirm(
+                    "Changing ROMs requires reloading the emulator. Continue?"
+                );
+                if (confirmReload) {
+                    location.reload();
+                }
+                return;
+            }
+
+            const fileName = romFile.name;
+            const ext = fileName.split(".").pop().toLowerCase();
+
+            // Only NDS supported on this page
+            if (ext !== "nds" && ext !== "zip") {
+                alert("Please drop a .nds (Nintendo DS) ROM file.\nFor GBA/SNES/NES, use the EmulatorJS page.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function () {
+                const blobURL = URL.createObjectURL(
+                    new Blob([reader.result], { type: "application/octet-stream" })
+                );
+
+                // Set EmulatorJS config BEFORE injecting loader
+                window.EJS_player        = "#game";
+                window.EJS_gameUrl       = blobURL;
+                window.EJS_gameName      = fileName.replace(/\.[^.]+$/, "");
+                window.EJS_core          = selectedCore;
+                window.EJS_pathtodata    = "https://cdn.emulatorjs.org/stable/data/";
+                window.EJS_startOnLoaded = true;
+                // NDS needs threads (SharedArrayBuffer) for melonDS
+                window.EJS_threads       = (selectedCore === "melonds");
+
+                const script = document.createElement("script");
+                script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+                script.onerror = () =>
+                    alert("EmulatorJS failed to load. Check your internet connection.");
+                document.body.appendChild(script);
+
+                emuLoaded = true;
+            };
+            reader.readAsArrayBuffer(romFile);
+        });
+    </script>
+</body>
+</html>
